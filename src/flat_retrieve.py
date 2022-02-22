@@ -40,4 +40,5 @@ _, indices = torch.topk(scores, args.K, dim=0)  # K x Q
 txt_mmap, ref_mmap = IndexTextOpen(args.bank)
 for qeury_idx in range(indices.size(1)):
     for k in range(args.K):
-        print(f"{IndexTextQuery(txt_mmap, ref_mmap, indices[k][qeury_idx])}\n\n")
+        print(f"{IndexTextQuery(txt_mmap, ref_mmap, indices[k][qeury_idx])}")
+    print("\n\n")

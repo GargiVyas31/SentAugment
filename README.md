@@ -70,7 +70,7 @@ python src/sase.py --input $input --model data/sase.pth --spm_model data/sase.sp
 
 ## use embedding to retrieve nearest neighbors
 input=sentence.txt  # input file containing a few (query) sentences
-python src/flat_retrieve.py --input $input.pt --bank $bank --emb data/keys.pt --K $K > nn.txt &
+python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &
 ```
 
 Sentences in nn.txt can be used for semi-supervised learning as unannotated in-domain data. They also provide good paraphrases (use the cosine similarity score to filter good paraphrase pairs).
