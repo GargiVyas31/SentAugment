@@ -65,11 +65,11 @@ emb=data/keys.pt  # embeddings of sentences (keys)
 K=10000  # number of sentences to retrieve per query
 
 ## encode input sentences as sase embedding
-input=sentence.txt  # input file containing a few (query) sentences
+input=data/sentence.txt  # input file containing a few (query) sentences
 python src/sase.py --input $input --model data/sase.pth --spm_model data/sase.spm --batch_size 64 --cuda "True" --output $input.pt
 
 ## use embedding to retrieve nearest neighbors
-input=sentence.txt  # input file containing a few (query) sentences
+input=data/sentence.txt  # input file containing a few (query) sentences
 python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &
 ```
 
