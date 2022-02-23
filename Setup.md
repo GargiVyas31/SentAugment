@@ -28,9 +28,14 @@ Download XML package inside SentAugment workspace.
 
 `git clone https://github.com/facebookresearch/XLM`
 
-Access a GPU instance for creating sentence embeddings.
+Create sentence embeddings from SASE. This is GPU heavy operation.
+
+`sbatch unity_scripts/embed_sentences.sh`
+
+Access a GPU instance for running any GPU required command.
 
 `srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 100G --pty /usr/bin/bash`
+
 
 
 
