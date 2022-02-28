@@ -32,5 +32,11 @@ Access a GPU instance for creating sentence embeddings.
 
 `srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 100G --pty /usr/bin/bash`
 
+For LASER:
+
+`pip install laserembeddings`
+
+`python -m laserembeddings download-models path/to/model/directory`
+
 
 
