@@ -38,5 +38,35 @@ For LASER:
 
 `python -m laserembeddings download-models path/to/model/directory`
 
+Encoding sentences
+
+`input=data/keys.txt`
+
+`output=data/keys.pt`
+
+`python src/laser.py --input $input --output $output --input_lang "en" --cuda "True" `
+
+
+Retrieve the Nearest NEighbor
+
+`bank=data/keys.txt`
+
+`emb=data/keys.pt`
+
+`K=2`
+
+
+
+`input=data/sentence.txt`
+
+`python src/laser.py --input $input --output $output --input_lang "fr" --cuda "True" `
+
+
+`input=data/sentence.txt`
+
+`python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
+
+
+
 
 
