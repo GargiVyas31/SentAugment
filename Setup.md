@@ -47,7 +47,7 @@ Encoding sentences
 `python src/laser.py --input $input --output $output --input_lang "en" --cuda "True" `
 
 
-Retrieve the Nearest NEighbor
+Retrieve the Nearest Neighbor
 
 `bank=data/keys.txt`
 
@@ -55,12 +55,14 @@ Retrieve the Nearest NEighbor
 
 `K=2`
 
+<br>
 
 
 `input=data/sentence.txt`
 
-`python src/laser.py --input $input --output $output --input_lang "fr" --cuda "True" `
+`python src/laser.py --input $input --output $input.pt --input_lang "fr" --cuda "True" `
 
+<br>
 
 `input=data/sentence.txt`
 
