@@ -28,9 +28,13 @@ Download XML package inside SentAugment workspace.
 
 `git clone https://github.com/facebookresearch/XLM`
 
-Create sentence embeddings from SASE. This is GPU heavy operation.
+Create sentence embeddings from SASE. This is GPU heavy operation. Use with a subset of *keys.txt* file.
 
 `sbatch unity_scripts/embed_sentences.sh`
+
+Download Faiss indexes to perform fast NN search on a large corpus. Download in `\data\` directory.
+
+`wget https://dl.fbaipublicfiles.com/sentaugment/100M_1GPU_16GB.faiss.idx`
 
 Access a GPU instance for running any GPU required command.
 

@@ -98,11 +98,11 @@ You can get K nearest neighbors for each sentence of an input text file by runni
 
 ```bash
 ## encode input sentences as sase embedding
-input=sentence.txt  # input file containing a few (query) sentences
+input=data/sentence.txt  # input file containing a few (query) sentences
 python src/sase.py --input $input --model data/sase.pth --spm_model data/sase.spm --batch_size 64 --cuda "True" --output $input.pt
 
 index=data/100M_1GPU_16GB.faiss.idx  # FAISS index path
-input=sentences.pt  # embeddings of input sentences
+input=data/sentences.txt.pt  # embeddings of input sentences
 bank=data/keys.txt  # text file with all the data (the compressed file keys.ref.bin64 should also be present in the same folder)
 K=10  # number of sentences to retrieve per query
 NPROBE=1024 # number of probes for querying the index
