@@ -62,7 +62,34 @@ Retrieve the Nearest Neighbors
 
 `python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
 
+#### For mDPR:
 
+Download transformers library.
 
+`conda install -c conda-forge transformers=4.12.2`
 
+Embed bank sentences.
 
+`input=data/keys_small.txt`
+
+`output=data/keys_small.pt`
+
+`python src/mdpr.py --input $input --output $output --batch_size=4 --cuda "True"`
+
+Embed input search sentences.
+
+`input=data/sentence.txt`
+
+`python src/mdpr.py --input $input --output $input.pt --batch_size=4 --cuda "True"`
+
+Perform nearest neighbors search.
+
+`input=data/sentence.txt`
+
+`bank=data/keys_small.txt`
+
+`emb=data/keys_small.pt`
+
+`K=2`
+
+`python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt`
