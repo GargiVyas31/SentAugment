@@ -7,15 +7,10 @@ Script that takes text as input and output SASE sentence embeddings
 Example: python src/sase.py --input $input --model $modelpath --spm_model $spmmodel --batch_size 64 --cuda "True" --output $output
 """
 
-import os
-import sys
-import torch
 import argparse
-from collections import OrderedDict
+
+import torch
 from laserembeddings import Laser
-
-
-
 
 parser = argparse.ArgumentParser(description="LASER encoding")
 
@@ -39,17 +34,12 @@ def main():
     # Load the model
     laser_model = "data/bilstm.93langs.2018-12-26.pt"
 
-  
     # cuda
     assert args.cuda in ["True", "False"]
     args.cuda = eval(args.cuda)
 
-    
-
     # build model / reload weights
     laser_model = Laser(laser_bpe_codes, laser_bpe_vocab, laser_model)
-
-   
 
     # load sentences
     sentences = []
@@ -61,12 +51,11 @@ def main():
 
     # encode sentences
     embs = []
-    
-    embeddings_input = laser_model.embed_sentences(sentences,lang=args.input_lang) 
+
+    embeddings_input = laser_model.embed_sentences(sentences, lang=args.input_lang)
     # print(type(embeddings_input))
     embeddings_input = torch.tensor(embeddings_input).double().cpu()
     embs.append(embeddings_input)
-    
 
     # save embeddings
     torch.save(torch.cat(embs, dim=0).squeeze(0), args.output)

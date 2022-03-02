@@ -32,7 +32,7 @@ Access a GPU instance for creating sentence embeddings.
 
 `srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 100G --pty /usr/bin/bash`
 
-For LASER:
+#### For LASER:
 
 `pip install laserembeddings`
 
@@ -46,8 +46,7 @@ Encoding sentences
 
 `python src/laser.py --input $input --output $output --input_lang "en" --cuda "True" `
 
-
-Retrieve the Nearest Neighbor
+Retrieve the Nearest Neighbors
 
 `bank=data/keys.txt`
 
@@ -57,14 +56,9 @@ Retrieve the Nearest Neighbor
 
 <br>
 
-
 `input=data/sentence.txt`
 
 `python src/laser.py --input $input --output $input.pt --input_lang "fr" --cuda "True" `
-
-<br>
-
-`input=data/sentence.txt`
 
 `python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
 
