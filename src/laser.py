@@ -28,11 +28,11 @@ def main():
     parser.add_argument("--output", type=str, default="", help="output file")
     args = parser.parse_args()
 
-    laser_bpe_codes = "data/93langs.fcodes"
-    laser_bpe_vocab = "data/93langs.fvocab"
+    laser_bpe_codes = "../data/93langs.fcodes"
+    laser_bpe_vocab = "../data/93langs.fvocab"
 
     # Load the model
-    laser_model = "data/bilstm.93langs.2018-12-26.pt"
+    laser_model = "../data/bilstm.93langs.2018-12-26.pt"
 
     # cuda
     assert args.cuda in ["True", "False"]

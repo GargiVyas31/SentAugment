@@ -34,17 +34,25 @@ Access a GPU instance for creating sentence embeddings.
 
 #### For LASER:
 
+Install dependencies. `path/to/model/directory` can be `/data`
+
 `pip install laserembeddings`
 
 `python -m laserembeddings download-models path/to/model/directory`
 
-Encoding sentences
+Encode bank sentences
 
 `input=data/keys.txt`
 
 `output=data/keys.pt`
 
 `python src/laser.py --input $input --output $output --input_lang "en" --cuda "True" `
+
+Encode input search sentences
+
+`input=data/sentence.txt`
+
+`python src/laser.py --input $input --output $input.pt --input_lang "fr" --cuda "True"`
 
 Retrieve the Nearest Neighbors
 
@@ -53,12 +61,6 @@ Retrieve the Nearest Neighbors
 `emb=data/keys.pt`
 
 `K=2`
-
-<br>
-
-`input=data/sentence.txt`
-
-`python src/laser.py --input $input --output $input.pt --input_lang "fr" --cuda "True" `
 
 `python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
 
@@ -70,7 +72,7 @@ Download transformers library.
 
 Embed bank sentences.
 
-`input=data/keys_small.txt`
+`input=data/keys_small.txt` (file should end with a newline)
 
 `output=data/keys_small.pt`
 
