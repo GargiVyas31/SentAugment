@@ -12,9 +12,13 @@ import torch
 import argparse
 import time
 
+from mdpr import get_torch_device
+
 DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(DIR + '/../src/lib')
 from indexing import IndexTextOpen, IndexTextQuery
+
+device = get_torch_device()
 
 parser = argparse.ArgumentParser(description="retrieve nearest neighbors of sentences")
 parser.add_argument("--input", type=str, required=True , help="input pytorch embeddings")
@@ -25,8 +29,8 @@ parser.add_argument("--K", type=int, default=100, help="number of nearest neighb
 args = parser.parse_args()
 
 # load query embedding and bank embedding
-query_emb = torch.load(args.input)
-bank_emb = torch.load(args.emb)
+query_emb = torch.load(args.input, map_location=torch.device(device))
+bank_emb = torch.load(args.emb, map_location=torch.device(device))
 
 # normalize embeddings
 query_emb.div_(query_emb.norm(2, 1, keepdim=True).expand_as(query_emb))
@@ -40,5 +44,5 @@ _, indices = torch.topk(scores, args.K, dim=0)  # K x Q
 txt_mmap, ref_mmap = IndexTextOpen(args.bank)
 for qeury_idx in range(indices.size(1)):
     for k in range(args.K):
-        print(f"{IndexTextQuery(txt_mmap, ref_mmap, indices[k][qeury_idx])}")
+        print(f"{k+1}: {IndexTextQuery(txt_mmap, ref_mmap, indices[k][qeury_idx])}")
     print("\n\n")

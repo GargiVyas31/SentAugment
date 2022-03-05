@@ -30,21 +30,29 @@ Download XML package inside SentAugment workspace.
 
 Access a GPU instance for creating sentence embeddings.
 
-`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 100G --pty /usr/bin/bash`
+`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --pty /usr/bin/bash`
 
-#### For LASER:
+### For LASER:
+
+Install dependencies. `path/to/model/directory` can be `/data`
 
 `pip install laserembeddings`
 
 `python -m laserembeddings download-models path/to/model/directory`
 
-Encoding sentences
+Encode bank sentences
 
 `input=data/keys.txt`
 
 `output=data/keys.pt`
 
 `python src/laser.py --input $input --output $output --input_lang "en" --cuda "True" `
+
+Encode input search sentences
+
+`input=data/sentence.txt`
+
+`python src/laser.py --input $input --output $input.pt --input_lang "fr" --cuda "True"`
 
 Retrieve the Nearest Neighbors
 
@@ -54,15 +62,36 @@ Retrieve the Nearest Neighbors
 
 `K=2`
 
-<br>
+`python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
+
+### For mDPR:
+
+Download transformers library.
+
+`conda install -c conda-forge transformers=4.12.2`
+
+Embed bank sentences.
+
+`input=data/keys_small.txt` (file should end with a newline)
+
+`output=data/keys_small.pt`
+
+`python src/mdpr.py --input $input --output $output --batch_size=4 --cuda "True"`
+
+Embed input search sentences.
 
 `input=data/sentence.txt`
 
-`python src/laser.py --input $input --output $input.pt --input_lang "fr" --cuda "True" `
+`python src/mdpr.py --input $input --output $input.pt --batch_size=4 --cuda "True"`
 
-`python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
+Perform nearest neighbors search.
 
+`input=data/sentence.txt`
 
+`bank=data/keys_small.txt`
 
+`emb=data/keys_small.pt`
 
+`K=2`
 
+`python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt`
