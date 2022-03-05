@@ -95,3 +95,13 @@ Perform nearest neighbors search.
 `K=2`
 
 `python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt`
+
+### For BM25:
+
+Download dependency.
+
+`pip install rank-bm25`
+
+Tokenize bank/corpus, input and generate nearest neighbours.
+
+`python src/bm25.py --input=data/sentence.txt --bank=data/keys_small.txt --K=3 --lowercase=True`
