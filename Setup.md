@@ -30,9 +30,9 @@ Download XML package inside SentAugment workspace.
 
 Access a GPU instance for creating sentence embeddings.
 
-`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 100G --pty /usr/bin/bash`
+`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --pty /usr/bin/bash`
 
-#### For LASER:
+### For LASER:
 
 Install dependencies. `path/to/model/directory` can be `/data`
 
@@ -64,7 +64,7 @@ Retrieve the Nearest Neighbors
 
 `python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt &`
 
-#### For mDPR:
+### For mDPR:
 
 Download transformers library.
 

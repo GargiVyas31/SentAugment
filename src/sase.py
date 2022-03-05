@@ -7,7 +7,6 @@ Script that takes text as input and output SASE sentence embeddings
 Example: python src/sase.py --input $input --model $modelpath --spm_model $spmmodel --batch_size 64 --cuda "True" --output $output
 """
 
-import os
 import sys
 import torch
 import argparse
@@ -76,9 +75,9 @@ def main():
 
     # encode sentences
     embs = []
-    for i in range(0, len(sentences), args.batch_size):
+    for bno, i in enumerate(range(0, len(sentences), args.batch_size)):
         if i % 100 == 0:
-            print(f"encoding sentences batch {i + 1}...")
+            print(f"encoding sentences batch {bno + 1}...")
 
         batch = sentences[i:i+args.batch_size]
         lengths = torch.LongTensor([len(s) + 1 for s in batch])
