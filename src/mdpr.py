@@ -27,7 +27,7 @@ def main():
     parser.add_argument("--input", type=str, default="", help="input file")
     parser.add_argument("--cuda", type=str, default="True", help="use cuda")
     parser.add_argument("--output", type=str, default="", help="output file")
-    parser.add_argument("--model_type", type=str, default="question", help="Select if you want to use the question or"
+    parser.add_argument("--model_type", type=str, default="passage", help="Select if you want to use the question or"
                                                                            "passage encoder of mDPR. Acceptable value "
                                                                            "are 'question' or 'passage'.")
     parser.add_argument("--batch_size", type=int, default=256, help="number of sentences to embed at a time.")

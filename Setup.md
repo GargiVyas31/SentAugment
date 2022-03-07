@@ -102,6 +102,22 @@ Download dependency.
 
 `pip install rank-bm25`
 
-Tokenize bank/corpus, input and generate nearest neighbours.
+Tokenize bank/corpus, input and generate nearest neighbours. GPU is not needed.
 
 `python src/bm25.py --input=data/sentence.txt --bank=data/keys_small.txt --K=3 --lowercase=True`
+
+### Create MC4 dataset files:
+
+Download dependencies.
+
+`pip install https://github.com/kpu/kenlm/archive/master.zip`
+
+Create MC4 files for using as sentence bank. GPU is not needed.
+
+`file_name=data/mc4_fr10.txt`
+
+`python src/generate_data.py --num_rows=10 --output $file_name --language=fr`
+
+For fast indexing, create a memory map of this file.
+
+`python src/compress_text.py --input $file_name`
