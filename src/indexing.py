@@ -107,7 +107,7 @@ def IndexLoad(idx_path, nprobe=0, gpu=False):
     print(' - setting nbprobe to {:d}'.format(nprobe), file=sys.stderr)
     if gpu:
         print(' - transfer index to %d GPUs ' % faiss.get_num_gpus(), file=sys.stderr)
-        index = faiss.index_cpu_to_all_gpus(index) # co=co
+        index = faiss.index_cpu_to_all_gpus(index)  # co=co
         faiss.GpuParameterSpace().set_index_parameter(index, 'nprobe', nprobe)
     return index
 
