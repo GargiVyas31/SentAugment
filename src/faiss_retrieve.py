@@ -35,11 +35,11 @@ faiss.normalize_L2(query_emb)
 
 # load the index
 index = IndexLoad(args.index, args.nprobe, args.gpu)
+print("faiss index has been loaded.", file=sys.stderr)
 
 # query the index and print retrieved neighbors
 txt_mmap, ref_mmap = IndexTextOpen(args.bank)
-nns = IndexSearchKNN(index, query_emb, txt_mmap, ref_mmap, args.K)
+nns = IndexSearchKNN(index, query_emb, txt_mmap, ref_mmap, args.K, verbose=False)
 for nn in nns:
     print(nn)
-
-
+    print()

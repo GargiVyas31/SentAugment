@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=faiss_query
-#SBATCH --output=./mylogs/knn_faiss_stdout.txt
+#SBATCH --output=./mylogs/knn_faiss_cpu_stdout.txt
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --mem=32G
@@ -19,7 +19,7 @@ python src/sase.py --input $input --model data/sase.pth --spm_model data/sase.sp
 
 index=data/100M_1GPU_16GB.faiss.idx  # FAISS index path
 bank=data/keys.txt  # text file with all the data (the compressed file keys.ref.bin64 should also be present in the same folder)
-K=10  # number of sentences to retrieve per query
-NPROBE=32 # number of probes for querying the index
+K=3  # number of sentences to retrieve per query
+NPROBE=1024 # number of probes for querying the index
 
-python src/faiss_retrieve.py --input $input.pt --bank $bank --index $index --K $K --nprobe $NPROBE --gpu "True" > nn_faiss.txt &
+python src/faiss_retrieve.py --input $input.pt --bank $bank --index $index --K $K --nprobe $NPROBE --gpu "False" > knn_faiss.txt
