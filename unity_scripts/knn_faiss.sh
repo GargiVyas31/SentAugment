@@ -5,7 +5,7 @@
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --mem=32G
-#SBATCH --exclude=node92
+#SBATCH --exclude=node92,node41
 
 set -e
 
@@ -19,7 +19,7 @@ python src/sase.py --input $input --model data/sase.pth --spm_model data/sase.sp
 
 index=data/100M_1GPU_16GB.faiss.idx  # FAISS index path
 bank=data/keys.txt  # text file with all the data (the compressed file keys.ref.bin64 should also be present in the same folder)
-K=3  # number of sentences to retrieve per query
+K=100  # number of sentences to retrieve per query
 NPROBE=1024 # number of probes for querying the index
 
-python src/faiss_retrieve.py --input $input.pt --bank $bank --index $index --K $K --nprobe $NPROBE --gpu "False" > knn_faiss.txt
+python src/faiss_retrieve.py --input $input.pt --bank $bank --index $index --K $K --nprobe $NPROBE --gpu "False" > data/knn_faiss.txt
