@@ -112,6 +112,8 @@ Download dependencies.
 
 `pip install https://github.com/kpu/kenlm/archive/master.zip`
 
+`conda install -c conda-forge datasets`
+
 Create MC4 files for using as sentence bank. GPU is not needed.
 
 `file_name=data/mc4_fr10.txt`
