@@ -3,7 +3,7 @@
 #SBATCH --job-name=download_cc_data
 #SBATCH --output=./mylogs/download_cc_data_stdout.txt
 #SBATCH --partition=cpu
-#SBATCH --mem=40G
+#SBATCH --mem=32G
 #SBATCH --exclude=node92
 
 set -e

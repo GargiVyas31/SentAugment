@@ -107,7 +107,7 @@ def IndexLoad(idx_path, nprobe=0, gpu=False):
     print(' - setting nbprobe to {:d}'.format(nprobe), file=sys.stderr)
     if gpu:
         print(' - transfer index to %d GPUs ' % faiss.get_num_gpus(), file=sys.stderr)
-        index = faiss.index_cpu_to_all_gpus(index) # co=co
+        index = faiss.index_cpu_to_all_gpus(index)  # co=co
         faiss.GpuParameterSpace().set_index_parameter(index, 'nprobe', nprobe)
     return index
 
@@ -116,10 +116,12 @@ def IndexLoad(idx_path, nprobe=0, gpu=False):
 # Search the [k] nearest vectors of [x] in the given index
 # and return the text lines
 
-def IndexSearchKNN(index, x, T, R, kmax=1, dedup=True):
+def IndexSearchKNN(index, x, T, R, kmax=1, dedup=True, verbose=False):
     D, I = index.search(x, kmax)
     all_res = []
     for n in range(x.shape[0]):
+        if verbose:
+            print(f"SearchKNN: Processing sentence {n + 1}.")
         prev = set()  # for depuplication
         res = []
         for i in range(kmax):
@@ -128,5 +130,7 @@ def IndexSearchKNN(index, x, T, R, kmax=1, dedup=True):
             if dedup and txt not in prev:
                 prev.add(txt)
                 res.append((txt, D[n, i]))
+        if verbose:
+            print(f"found all neighbours of sentence {n + 1}.")
         all_res.append(res)
     return all_res
