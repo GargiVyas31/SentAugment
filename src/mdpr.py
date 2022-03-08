@@ -11,7 +11,7 @@ def get_torch_device():
     if torch.cuda.is_available():
         device_name = torch.cuda.get_device_name()
         n_gpu = torch.cuda.device_count()
-        print(f"Found device: {device_name}, n_gpu: {n_gpu}")
+        # print(f"Found device: {device_name}, n_gpu: {n_gpu}")
         device_ = torch.device("cuda")
     else:
         device_ = torch.device('cpu')

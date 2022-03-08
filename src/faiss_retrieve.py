@@ -42,4 +42,4 @@ txt_mmap, ref_mmap = IndexTextOpen(args.bank)
 nns = IndexSearchKNN(index, query_emb, txt_mmap, ref_mmap, args.K, verbose=False)
 for nn in nns:
     print(nn)
-    print()
+    # print()
