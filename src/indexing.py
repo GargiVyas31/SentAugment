@@ -9,6 +9,7 @@ import os.path
 import sys
 import numpy as np
 import torch
+import io 
 
 
 ###############################################################################
@@ -34,7 +35,7 @@ def LoadTextSimple(text_fname):
     used for retrieve text using sentence idx from faiss
     NOTE: inefficient, will be replaced with mmap
     """
-    with open(text_fname, 'r', encoding='utf-8', errors='ignore') as fin:
+    with io.open(text_fname, 'r', encoding='utf-8', errors='ignore') as fin:
         sentences = [s.strip() for s in fin]
     return sentences
 
@@ -45,7 +46,7 @@ def CompressText(txt_fname):
     """
     fname = txt_fname.replace('.txt', '.ref.bin64')
     offsets = [0]
-    with open(txt_fname, 'r', encoding='utf-8', errors='ignore') as fin:
+    with io.open(txt_fname, 'r', encoding='utf-8', errors='ignore') as fin:
         for line in fin:
             offsets.append(offsets[-1] + len(bytes(line, encoding='utf-8', errors='ignore')))
     offsets = np.array(offsets[:-1], dtype=np.int64)  # discard last one
@@ -64,6 +65,7 @@ def IndexTextOpen(txt_fname):
     # print('Reading text corpus')
     # print(' - texts: {:s}'.format(txt_fname))
     txt_mmap = np.memmap(txt_fname, mode='r', dtype=np.uint8)
+    
     fname = txt_fname.replace('.txt', '.ref.bin32')
     if os.path.isfile(fname):
         # print(' - sentence start offsets (32 bit): {}'.format(fname))
@@ -92,7 +94,7 @@ def IndexTextQuery(txt_mmap, ref_mmap, idx):
     while txt_mmap[p+i] != 10 and i < dim:
         b[i] = txt_mmap[p+i]
         i += 1
-    return b[0:i].decode('utf-8')
+    return b[0:i].decode('utf-8', "ignore")
 
 
 
