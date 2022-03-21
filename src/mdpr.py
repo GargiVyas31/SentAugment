@@ -49,8 +49,8 @@ def main():
     if args.cuda:
         model.cuda()
 
-    max_length = model.config.max_length
-    print(f"model max length = {max_length}")
+    print(f"Max position embedding for model: {model.config.max_position_embeddings}")
+    max_length = 128
 
     # load sentences
     sentences = []

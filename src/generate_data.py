@@ -1,11 +1,8 @@
 import argparse
 from typing import List
-from os.path import exists
 
-import nltk
-from datasets import load_dataset
-from nltk.tokenize import sent_tokenize
 import spacy
+from datasets import load_dataset
 
 
 def split_mixed(document: str) -> List[str]:
