@@ -8,6 +8,7 @@ Example: python src/sase.py --input $input --model $modelpath --spm_model $spmmo
 """
 
 import argparse
+import pathlib
 
 import torch
 from laserembeddings import Laser
@@ -28,11 +29,14 @@ def main():
     parser.add_argument("--output", type=str, default="", help="output file")
     args = parser.parse_args()
 
-    laser_bpe_codes = "data/93langs.fcodes"
-    laser_bpe_vocab = "data/93langs.fvocab"
+    current_path = str(pathlib.Path(__file__).parent.absolute())
+    current_path = current_path + "/../"  # go one level up.
+
+    laser_bpe_codes = current_path + "data/93langs.fcodes"
+    laser_bpe_vocab = current_path + "data/93langs.fvocab"
 
     # Load the model
-    laser_model = "data/bilstm.93langs.2018-12-26.pt"
+    laser_model = current_path + "data/bilstm.93langs.2018-12-26.pt"
 
     # cuda
     assert args.cuda in ["True", "False"]
