@@ -1,32 +1,37 @@
 #!/bin/bash
 
+#SBATCH --job-name=mc4_mdpr_knn
+#SBATCH --output=./mylogs/mc4_mdpr_knn_stdout.txt
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --mem=16G
+#SBATCH --exclude=node92,node41,node42
+
 set -e
 
 cd /home/ahattimare_umass_edu/scratch/amit/SentAugment
 
 source activate sent_augment
 
-echo "Download MC4 data."
+echo "Download MC4 data for French."
 file_name=data/mc4_fr100.txt
-python src/generate_data.py --num_rows=100 --output $file_name --language=fr
+python src/generate_data.py --num_rows=100 --output $file_name --language=fr --split_by=sentence
 python src/compress_text.py --input $file_name
 
-echo "Embed bank sentences"
-#input=data/keys_small.txt
-#output=data/keys_small.pt
+echo "Embed bank sentences."
 input=data/mc4_fr100.txt
 output=data/mc4_fr100.pt
-python src/mdpr.py --input $input --output $output --batch_size=4 --cuda "True"
+python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True"
 
-echo "Embed query sentences"
+echo "Embed query sentences."
 input=data/sentence.txt
-python src/mdpr.py --input $input --output $input.pt --batch_size=4 --cuda "True"
+python src/mdpr.py --input $input --output $input.pt --batch_size=256 --cuda "True"
 
-echo "Perform KNN search"
-#input=data/sentence.txt
-#bank=data/keys_small.txt
-emb=data/keys_small.pt
+echo "Perform KNN search."
+input=data/sentence.txt
 bank=data/mc4_fr100.txt
 emb=data/mc4_fr100.pt
 K=2
-python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K
+python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K --pretty_print True
+
+exit 0

@@ -110,15 +110,26 @@ Tokenize bank/corpus, input and generate nearest neighbours. GPU is not needed.
 
 Download dependencies.
 
-`pip install https://github.com/kpu/kenlm/archive/master.zip`
+```
+pip install https://github.com/kpu/kenlm/archive/master.zip
+conda install -c conda-forge datasets
+```
 
-`conda install -c conda-forge datasets`
+Download Spacy for sentence tokenization.
+
+```
+pip install -U pip setuptools wheel
+pip install -U spacy
+python -m spacy download fr_core_news_md
+```
+
 
 Create MC4 files for using as sentence bank. GPU is not needed.
 
-`file_name=data/mc4_fr10.txt`
-
-`python src/generate_data.py --num_rows=10 --output $file_name --language=fr`
+```
+file_name=data/mc4_fr10.txt
+python src/generate_data.py --num_rows=10 --output $file_name --language=fr --split_by=sentence
+```
 
 For fast indexing, create a memory map of this file.
 

@@ -1,18 +1,22 @@
 import argparse
 from typing import List
 from os.path import exists
+
+import nltk
 from datasets import load_dataset
+from nltk.tokenize import sent_tokenize
+import spacy
 
 
-def process(sentence: str) -> List[str]:
+def split_mixed(document: str) -> List[str]:
     """
-    Takes in a sentence obtained from MC4 sampling and converts it into smaller sentences. The strategy to split
+    Takes in a document obtained from MC4 sampling and converts it into smaller sentences. The strategy to split
     sentence is to divide the sentence into paragraphs, then combine smaller adjacent paragraphs into one.
     Each resulting sentence is truncated to 2000-2500 characters long (roughly 250-400 words).
     Returns a list of sentences.
     """
     sent_min_char, sent_max_char = 2000, 2500
-    paragraphs = sentence.split("\n")
+    paragraphs = document.split("\n")
     sentences = []
     curr = ""
     for para in paragraphs:
@@ -26,7 +30,30 @@ def process(sentence: str) -> List[str]:
     return sentences
 
 
-def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=None):
+def split_into_paragraphs(document: str) -> list:
+    paragraphs = document.split("\n")
+    # remove very small paragraphs.
+    paragraphs = [para for para in paragraphs if len(para) > 5]
+    return paragraphs
+
+
+def split_into_sentences(document: str, spacy_module) -> list:
+    doc = spacy_module(document)
+    if not doc.has_annotation("SENT_START"):
+        print("Spacy document doesn't have SENT_START.")
+        return []
+    # remove newline character from sentences.
+    sentences = [str(sent).replace('\n', ' ') for sent in doc.sents]
+    # remove very short sentences.
+    sentences = [sent for sent in sentences if len(sent) > 5]
+    return sentences
+
+
+def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=None, split_by=None):
+    assert save_path is not None, "provide a save_path to save the output."
+    assert split_by in ["sentence", "paragraph", "mixed"], "provide a valid splitting technique."
+    assert language_code in ["fr"], "only Fr is supported."
+
     mc4random = load_dataset(
         "bertin-project/mc4-sampling", language_code,
         split="train",
@@ -35,47 +62,70 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
         factor=0.5,
     )
 
-    # Create the file if it does not exist.
-    if not exists(save_path):
-        fp = open(save_path, "w")
-        fp.close()
+    nlp_spacy = spacy.load("fr_core_news_md")
+
+    # Clear out file content.
+    with open(save_path, 'w') as f:
+        pass
 
     sentences = []
+    curr_size = 0
+    print_ctr = 1
     for i, sample in enumerate(mc4random):
-        processed_sentences = process(sample["text"])
-        sentences += processed_sentences
-        i += len(processed_sentences)
+        if split_by == "mixed":
+            processed_sentences = split_mixed(sample["text"])
+        elif split_by == "paragraph":
+            processed_sentences = split_into_paragraphs(sample["text"])
+        else:
+            processed_sentences = split_into_sentences(sample["text"], nlp_spacy)
 
-        if i % 1000 == 0:
-            print(f"Processed {i} sentences so far...")
+        sentences += processed_sentences
+        curr_size += len(processed_sentences)
+
+        if curr_size % 1000 == 0:
+            print(f"Processed {curr_size} sentences so far...")
 
         if len(sentences) >= batch_size:
-            with open(save_path, "a") as f:
-                # writelines() does not add newline after each sentence. So add it explicitly.
-                sentences = [sent + "\n" for sent in sentences]
-                f.writelines(sentences)
+            _append_to_file(save_path, sentences, -1)
+            print_ctr += len(sentences)
             sentences = []
 
-        if i >= num_rows:
+        if curr_size >= num_rows:
             break
     if len(sentences) > 0:
-        with open(save_path, "a") as f:
-            sentences = [sent + "\n" for sent in sentences]
-            f.writelines(sentences)
+        _append_to_file(save_path, sentences, -1)
+        print_ctr += len(sentences)
         sentences = []
+
+
+def _append_to_file(save_path: str, sentences: list, counter_start: int):
+    with open(save_path, "a") as f:
+        # writelines() does not add newline after each sentence. So add it explicitly.
+        if counter_start == -1:
+            # don't print sentence count in the beginning.
+            f.writelines([sent + "\n" for sent in sentences])
+        else:
+            new_sentences = []
+            for sent in sentences:
+                new_sentences.append(str(counter_start) + ": " + sent + "\n")
+                counter_start += 1
+            f.writelines(new_sentences)
 
 
 parser = argparse.ArgumentParser(description="Create MC4 data file.")
 
 
 if __name__ == '__main__':
-    parser.add_argument("--num_rows", type=int, default=10, help="number of sentences to write.")
+    parser.add_argument("--num_rows", type=int, default=10, help="number of rows (sentences or paragraphs) to write.")
     parser.add_argument("--output", type=str, help="path of the output text file.")
     parser.add_argument("--language", type=str, default="fr", help="language code for MC4 from "
                                                                    "https://huggingface.co/datasets/mc4")
+    parser.add_argument("--split_by", type=str, choices=["sentence", "paragraph", "mixed"], required=True,
+                        help="How to split the MC4 sentences.")
     args = parser.parse_args()
 
     assert args.num_rows >= 1, "--num_rows need to be positive integer."
 
-    sample_mc4_data(num_rows=args.num_rows, language_code=args.language, save_path=args.output)
+    sample_mc4_data(num_rows=args.num_rows, language_code=args.language, save_path=args.output,
+                    split_by=args.split_by)
     print("done")
