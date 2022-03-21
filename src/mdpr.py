@@ -11,7 +11,7 @@ def get_torch_device():
     if torch.cuda.is_available():
         device_name = torch.cuda.get_device_name()
         n_gpu = torch.cuda.device_count()
-        # print(f"Found device: {device_name}, n_gpu: {n_gpu}")
+        print(f"Found device: {device_name}, n_gpu: {n_gpu}")
         device_ = torch.device("cuda")
     else:
         device_ = torch.device('cpu')
@@ -42,7 +42,9 @@ def main():
     model_name = "castorini/mdpr-question-nq" if args.model_type == "question" else "castorini/mdpr-passage-nq"
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name)
+    print("tokenizer loaded.")
+    model = AutoModel.from_pretrained(model_name, resume_download=True)
+    print("model loaded.")
     model.eval()
     if args.cuda:
         model.cuda()

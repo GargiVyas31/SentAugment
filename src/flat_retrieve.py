@@ -25,8 +25,11 @@ parser.add_argument("--input", type=str, required=True , help="input pytorch emb
 parser.add_argument("--bank", type=str, required=True, help="compressed text file")
 parser.add_argument("--emb", type=str, required=True, help="pytorch embeddings of text bank")
 parser.add_argument("--K", type=int, default=100, help="number of nearest neighbors per sentence")
+parser.add_argument("--pretty_print", type=str, choices=["True", "False"], default="False")
 
 args = parser.parse_args()
+
+pretty_print = args.pretty_print == "True"
 
 # load query embedding and bank embedding
 query_emb = torch.load(args.input, map_location=torch.device(device))
@@ -43,8 +46,12 @@ _, indices = torch.topk(scores, args.K, dim=0)  # K x Q
 # fetch and print retrieved text
 txt_mmap, ref_mmap = IndexTextOpen(args.bank)
 
-for qeury_idx in range(indices.size(1)):
+for query_idx in range(indices.size(1)):
     for k in range(args.K):
-        print(IndexTextQuery(txt_mmap, ref_mmap, indices[k][qeury_idx]))
-    #     print(f"{k+1}: {IndexTextQuery(txt_mmap, ref_mmap, indices[k][qeury_idx])}")
-    # print("\n")
+        sentence = IndexTextQuery(txt_mmap, ref_mmap, indices[k][query_idx])
+        if pretty_print:
+            print(f"{k+1}: {sentence}")
+        else:
+            print(sentence)
+    if pretty_print:
+        print()
