@@ -3,6 +3,9 @@ Script that takes text as input and output mDPR sentence embeddings.
 """
 
 import argparse
+import os
+import pathlib
+
 import torch
 from transformers import AutoTokenizer, AutoModel
 
@@ -31,7 +34,9 @@ def main():
                                                                            "passage encoder of mDPR. Acceptable value "
                                                                            "are 'question' or 'passage'.")
     parser.add_argument("--batch_size", type=int, default=256, help="number of sentences to embed at a time.")
-
+    parser.add_argument("--load_saved", type=str, default="False", choices=["True", "False"], help="load locally saved "
+                                                            "pre-trained model if possible. Also, to save pre-trained"
+                                                            "model locally that is downloaded from huggingface.")
     args = parser.parse_args()
 
     # cuda
@@ -41,10 +46,20 @@ def main():
     assert args.model_type in ["question", "passage"], "--model_type only supports 'question' or 'passage'."
     model_name = "castorini/mdpr-question-nq" if args.model_type == "question" else "castorini/mdpr-passage-nq"
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    print("tokenizer loaded.")
-    model = AutoModel.from_pretrained(model_name, resume_download=True)
-    print("model loaded.")
+    current_path = str(pathlib.Path(__file__).parent.absolute())
+    model_path = current_path + "/../models/" + model_name
+    load_local_copy = True if args.load_saved == "True" and os.path.isdir(model_path) else False
+
+    tokenizer = AutoTokenizer.from_pretrained(model_path if load_local_copy else model_name)
+    if args.load_saved:
+        tokenizer.save_pretrained(model_path)
+    print("MDPR tokenizer loaded.")
+
+    model = AutoModel.from_pretrained(model_path if load_local_copy else model_name, resume_download=True)
+    if args.load_saved:
+        model.save_pretrained(model_path)
+    print("MDPR model loaded.")
+
     model.eval()
     if args.cuda:
         model.cuda()

@@ -76,13 +76,13 @@ Embed bank sentences.
 
 `output=data/keys_small.pt`
 
-`python src/mdpr.py --input $input --output $output --batch_size=4 --cuda "True"`
+`python src/mdpr.py --input $input --output $output --batch_size=4 --cuda "True" --load_saved "True"`
 
 Embed input search sentences.
 
 `input=data/sentence.txt`
 
-`python src/mdpr.py --input $input --output $input.pt --batch_size=4 --cuda "True"`
+`python src/mdpr.py --input $input --output $input.pt --batch_size=4 --cuda "True" --load_saved "True"`
 
 Perform nearest neighbors search.
 
