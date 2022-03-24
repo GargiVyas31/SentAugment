@@ -11,7 +11,9 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
 import torch
+from tqdm import tqdm
 
 from mdpr import get_torch_device
 
@@ -22,8 +24,8 @@ from indexing import IndexTextOpen, IndexTextQuery
 device = get_torch_device()
 
 parser = argparse.ArgumentParser(description="retrieve nearest neighbors of sentences")
-parser.add_argument("--input", type=str, required=True , help="input text file. We assume embeddings are present in"
-                                                              "input.pt file.")
+parser.add_argument("--input", type=str, required=True, help="input text file.")
+parser.add_argument("--input_emb", type=str, required=True, help="input text file embeddings.")
 parser.add_argument("--bank", type=str, required=True, help="compressed text file")
 parser.add_argument("--emb", type=str, required=True, help="pytorch embeddings of text bank")
 parser.add_argument("--K", type=int, default=100, help="number of nearest neighbors per sentence")
@@ -38,7 +40,7 @@ assert pretty_print and Path(args.input).is_file(), "--pretty_print is True but 
 ppf = open(pretty_print_file, 'w') if pretty_print_file != "" else None
 
 # load query embedding and bank embedding
-query_emb = torch.load(args.input + ".pt", map_location=torch.device(device))
+query_emb = torch.load(args.input_emb, map_location=torch.device(device))
 bank_emb = torch.load(args.emb, map_location=torch.device(device))
 
 # normalize embeddings
@@ -52,17 +54,23 @@ _, indices = torch.topk(scores, args.K, dim=0)  # K x Q
 # fetch and print retrieved text
 txt_mmap, ref_mmap = IndexTextOpen(args.bank)
 
+bank_index_used = []
+
 with open(args.input, "r") as input_file:
     with open(args.output, "w") as output_file:
-        for i, (query_idx, line) in enumerate(zip(range(indices.size(1)), input_file)):
+        for i, (query_idx, line) in enumerate(tqdm(zip(range(indices.size(1)), input_file), desc="Processing Input file.")):
             if ppf:
                 ppf.write(f"{i + 1} En: {line}")
             for k in range(args.K):
+                bank_index_used.append((indices[k][query_idx]).cpu())
                 sentence = IndexTextQuery(txt_mmap, ref_mmap, indices[k][query_idx])
                 if ppf:
                     ppf.write(f"{k + 1} Fr: {sentence}\n")
                 output_file.write(sentence + "\n")
             if ppf:
                 ppf.write(f"\n")
-
 ppf.close()
+
+# This shows how the KNN retrieved data is spread out in the bank.
+for perc in range(0, 101, 10):
+    print(f"{perc} percentile index: {np.percentile(bank_index_used, perc):.2f}")
