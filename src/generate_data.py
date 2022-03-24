@@ -79,8 +79,8 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
         sentences += processed_sentences
         curr_size += len(processed_sentences)
 
-        if curr_size % 1000 == 0:
-            print(f"Processed {curr_size} sentences so far...")
+        if i % 1000 == 0:
+            print(f"Iteration {i}, processed {curr_size} sentences so far...")
 
         if len(sentences) >= batch_size:
             _append_to_file(save_path, sentences, -1)

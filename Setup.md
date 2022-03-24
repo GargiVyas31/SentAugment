@@ -86,15 +86,15 @@ Embed input search sentences.
 
 Perform nearest neighbors search.
 
-`input=data/sentence.txt`
+```
+input=data/sentence.txt
+bank=data/keys_small.txt
+emb=data/keys_small.pt
+K=2
+output=data/sentences_nn.txt
+python src/flat_retrieve.py --input $input --bank $bank --emb $emb --K $K --output $output
+```
 
-`bank=data/keys_small.txt`
-
-`emb=data/keys_small.pt`
-
-`K=2`
-
-`python src/flat_retrieve.py --input $input.pt --bank $bank --emb $emb --K $K > nn.txt`
 
 ### For BM25:
 
