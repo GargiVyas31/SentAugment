@@ -3,10 +3,12 @@ Script that takes text as input and output mDPR sentence embeddings.
 """
 
 import argparse
+import io
 import os
 import pathlib
 
 import torch
+from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModel
 
 
@@ -69,7 +71,7 @@ def main():
 
     # load sentences
     sentences = []
-    with open(args.input) as f:
+    with io.open(args.input, encoding="utf-8", errors="ignore") as f:
         for i, line in enumerate(f):
             sentences.append(line.rstrip())
             if i % 10_000 == 0:
@@ -78,7 +80,7 @@ def main():
     # encode sentences
     embs = []
     with torch.no_grad():
-        for i in range(0, len(sentences), args.batch_size):
+        for i in tqdm(range(0, len(sentences), args.batch_size)):
             batch = sentences[i:i + args.batch_size]
             batch_sent_tok = tokenizer(batch, padding="max_length",
                                        max_length=max_length, truncation=True,
@@ -86,7 +88,7 @@ def main():
             if args.cuda:
                 batch_sent_tok = batch_sent_tok.to(device)
             batch_embeddings = model(**batch_sent_tok)
-            embs.append(batch_embeddings.pooler_output)
+            embs.append(batch_embeddings.pooler_output.cpu())
 
     # save embeddings
     torch.save(torch.cat(embs, dim=0).squeeze(0), args.output)
