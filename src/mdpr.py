@@ -57,7 +57,7 @@ def main():
         tokenizer.save_pretrained(model_path)
     print("MDPR tokenizer loaded.")
 
-    model = AutoModel.from_pretrained(model_path if load_local_copy else model_name, resume_download=True)
+    model = AutoModel.from_pretrained(model_path if load_local_copy else model_name)
     if args.load_saved:
         model.save_pretrained(model_path)
     print("MDPR model loaded.")
@@ -80,7 +80,7 @@ def main():
     # encode sentences
     embs = []
     with torch.no_grad():
-        for i in tqdm(range(0, len(sentences), args.batch_size)):
+        for i in tqdm(range(0, len(sentences), args.batch_size), desc="Embedding sentences"):
             batch = sentences[i:i + args.batch_size]
             batch_sent_tok = tokenizer(batch, padding="max_length",
                                        max_length=max_length, truncation=True,
