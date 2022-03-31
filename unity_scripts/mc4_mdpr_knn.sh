@@ -17,14 +17,14 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 
 echo "Download MC4 data for French."
 file_name=data/mc4_fr10k.txt
-python src/generate_data.py --num_rows=100 --output $file_name --language=fr --split_by=sentence
+python src/generate_data.py --num_rows=1000 --output $file_name --language=fr --split_by=sentence
 python src/compress_text.py --input $file_name
 
 #echo "Embed bank sentences."
-#input=data/mc4_fr10000.txt
-#output=data/mc4_fr10000.pt
+#input=data/mc4_fr10k.txt
+#output=data/mc4_fr10k.pt
 #python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True"
-#
+
 #echo "Embed query sentences."
 #input=data/titles.txt
 #python src/mdpr.py --input $input --output $input.pt --batch_size=256 --cuda "True" --load_save "True"
