@@ -57,7 +57,6 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
         streaming=True,
         sampling_method="random",
         factor=0.5,
-        cache_dir="/home/ahattimare_umass_edu/scratch"
     )
 
     nlp_spacy = spacy.load("fr_core_news_md")
