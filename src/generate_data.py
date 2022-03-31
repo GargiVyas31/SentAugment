@@ -46,7 +46,8 @@ def split_into_sentences(document: str, spacy_module) -> list:
     return sentences
 
 
-def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=None, split_by=None):
+def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=None, split_by=None,
+                    print_sno=False):
     assert save_path is not None, "provide a save_path to save the output."
     assert split_by in ["sentence", "paragraph", "mixed"], "provide a valid splitting technique."
     assert language_code in ["fr"], "only Fr is supported."
@@ -83,14 +84,14 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
             print(f"Iteration {i}, processed {curr_size} sentences so far...")
 
         if len(sentences) >= batch_size:
-            _append_to_file(save_path, sentences, -1)
+            _append_to_file(save_path, sentences, print_ctr if print_sno else -1)
             print_ctr += len(sentences)
             sentences = []
 
         if curr_size >= num_rows:
             break
     if len(sentences) > 0:
-        _append_to_file(save_path, sentences, -1)
+        _append_to_file(save_path, sentences, print_ctr if print_sno else -1)
         print_ctr += len(sentences)
         sentences = []
 
@@ -124,5 +125,5 @@ if __name__ == '__main__':
     assert args.num_rows >= 1, "--num_rows need to be positive integer."
 
     sample_mc4_data(num_rows=args.num_rows, language_code=args.language, save_path=args.output,
-                    split_by=args.split_by)
+                    split_by=args.split_by, print_sno=True)
     print("done")
