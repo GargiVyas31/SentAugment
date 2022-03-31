@@ -43,11 +43,11 @@ def split_into_sentences(document: str, spacy_module) -> list:
     sentences = [str(sent).replace('\n', ' ') for sent in doc.sents]
 
     # remove very short sentences or when words are not actual words.
-    def remove_sent(sent: str) -> bool:
+    def keep_sent(sent: str) -> bool:
         words = sent.split(' ')
-        return len(words) < 8 or any(len(word) > 50 for word in words)
+        return len(words) >= 8 and all(len(word) < 50 for word in words)
 
-    sentences = list(filter(remove_sent, sentences))
+    sentences = list(filter(keep_sent, sentences))
     return sentences
 
 
