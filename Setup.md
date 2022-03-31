@@ -30,7 +30,7 @@ Download XML package inside SentAugment workspace.
 
 Access a GPU instance for creating sentence embeddings.
 
-`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42 --pty /usr/bin/bash`
+`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42,node92 --pty /usr/bin/bash`
 
 ### For LASER:
 
