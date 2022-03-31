@@ -13,6 +13,8 @@ cd /home/ahattimare_umass_edu/scratch/amit/SentAugment
 
 source activate sent_augment
 
+export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
+
 echo "Download MC4 data for French."
 file_name=data/mc4_fr10.txt
 python src/generate_data.py --num_rows=10 --output $file_name --language=fr --split_by=sentence
