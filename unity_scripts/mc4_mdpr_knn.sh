@@ -14,25 +14,25 @@ cd /home/ahattimare_umass_edu/scratch/amit/SentAugment
 source activate sent_augment
 
 echo "Download MC4 data for French."
-file_name=data/mc4_fr10000.txt
-python src/generate_data.py --num_rows=10000 --output $file_name --language=fr --split_by=sentence
+file_name=data/mc4_fr10.txt
+python src/generate_data.py --num_rows=10 --output $file_name --language=fr --split_by=sentence
 python src/compress_text.py --input $file_name
 
-echo "Embed bank sentences."
-input=data/mc4_fr10000.txt
-output=data/mc4_fr10000.pt
-python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True"
-
-echo "Embed query sentences."
-input=data/titles.txt
-python src/mdpr.py --input $input --output $input.pt --batch_size=256 --cuda "True" --load_save "True"
-
-echo "Perform KNN search."
-input=data/titles.txt
-bank=data/mc4_fr10000.txt
-emb=data/mc4_fr10000.pt
-output=data/titles_nn.txt
-K=3
-python src/flat_retrieve.py --input $input --bank $bank --emb $emb --K $K --pretty_print True --output $output
+#echo "Embed bank sentences."
+#input=data/mc4_fr10000.txt
+#output=data/mc4_fr10000.pt
+#python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True"
+#
+#echo "Embed query sentences."
+#input=data/titles.txt
+#python src/mdpr.py --input $input --output $input.pt --batch_size=256 --cuda "True" --load_save "True"
+#
+#echo "Perform KNN search."
+#input=data/titles.txt
+#bank=data/mc4_fr10000.txt
+#emb=data/mc4_fr10000.pt
+#output=data/titles_nn.txt
+#K=3
+#python src/flat_retrieve.py --input $input --bank $bank --emb $emb --K $K --pretty_print True --output $output
 
 exit 0
