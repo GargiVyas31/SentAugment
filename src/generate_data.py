@@ -41,8 +41,13 @@ def split_into_sentences(document: str, spacy_module) -> list:
         return []
     # remove newline character from sentences.
     sentences = [str(sent).replace('\n', ' ') for sent in doc.sents]
-    # remove very short sentences based on word count.
-    sentences = list(filter(lambda sent: len(sent.split(' ')) >= 8, sentences))
+
+    # remove very short sentences or when words are not actual words.
+    def remove_sent(sent: str) -> bool:
+        words = sent.split(' ')
+        return len(words) < 8 or any(len(word) > 50 for word in words)
+
+    sentences = list(filter(remove_sent, sentences))
     return sentences
 
 
