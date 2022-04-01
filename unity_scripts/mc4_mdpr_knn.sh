@@ -32,8 +32,8 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 
 echo "Perform KNN search for Fr."
 
-input_arr=("titles.txt" "titles.txt" "titles.txt" "titles.txt")
-input_emb_arr=("titles_1k_mdpr_pass.pt" "titles_1k_mdpr_pass.pt" "titles_1k_mdpr_ques.pt" "titles_1k_mdpr_ques.pt")
+input_arr=("data/titles.txt" "data/titles.txt" "data/titles.txt" "data/titles.txt")
+input_emb_arr=("data/titles_1k_mdpr_pass.pt" "data/titles_1k_mdpr_pass.pt" "data/titles_1k_mdpr_ques.pt" "data/titles_1k_mdpr_ques.pt")
 K=3
 
 bank_arr=("data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt")
