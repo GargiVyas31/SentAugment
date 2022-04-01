@@ -20,15 +20,16 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 #python src/generate_data.py --num_rows=100000 --output $file_name --language=de --split_by=sentence
 #python src/compress_text.py --input $file_name
 
-echo "Embed bank sentences."
-input=data/mc4_fr100k.txt
-output=data/mc4_fr100k_mdpr_ques.pt
-python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="question"
+#echo "Embed bank sentences."
+#input=data/mc4_fr100k.txt
+#output=data/mc4_fr100k_mdpr_ques.pt
+#python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="question"
 
-#echo "Embed query sentences."
-#input=data/titles.txt
-#python src/mdpr.py --input $input --output $input.pt --batch_size=256 --cuda "True" --load_save "True"
-#
+echo "Embed query sentences."
+input=data/titles.txt
+output=data/titles_1k_mdpr_pass.pt
+python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
+
 #echo "Perform KNN search."
 #input=data/titles.txt
 #bank=data/mc4_fr10000.txt
