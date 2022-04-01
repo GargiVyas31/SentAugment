@@ -44,7 +44,7 @@ output_arr=("data/titles_1k_pass_fr100k_pass_mdpr.txt" "data/titles_1k_pass_fr10
 #emb_arr=("data/mc4_de100k_mdpr_pass.pt", "data/mc4_de100k_mdpr_ques.pt" "data/mc4_de100k_mdpr_pass.pt" "data/mc4_de100k_mdpr_ques.pt")
 #output_arr=("data/titles_1k_pass_de100k_pass_mdpr.txt" "data/titles_1k_pass_de100k_ques_mdpr.txt" "data/titles_1k_ques_de100k_pass_mdpr.txt" "data/titles_1k_ques_de100k_ques_mdpr.txt")
 
-for index in ${!input[*]}; do
+for index in ${!input_arr[*]}; do
   input=input_arr[$index]
   input_emb=input_emb_arr[$index]
   bank=bank_arr[$index]
