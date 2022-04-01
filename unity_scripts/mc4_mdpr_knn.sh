@@ -15,15 +15,15 @@ source activate sent_augment
 
 export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 
-echo "Download MC4 data for German."
-file_name=data/mc4_de100k.txt
-python src/generate_data.py --num_rows=100000 --output $file_name --language=de --split_by=sentence
-python src/compress_text.py --input $file_name
+#echo "Download MC4 data for German."
+#file_name=data/mc4_de100k.txt
+#python src/generate_data.py --num_rows=100000 --output $file_name --language=de --split_by=sentence
+#python src/compress_text.py --input $file_name
 
-#echo "Embed bank sentences."
-#input=data/mc4_fr10k.txt
-#output=data/mc4_fr10k.pt
-#python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True"
+echo "Embed bank sentences."
+input=data/mc4_fr10.txt
+output=data/mc4_fr100k_mdpr_pass.pt
+python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
 
 #echo "Embed query sentences."
 #input=data/titles.txt
