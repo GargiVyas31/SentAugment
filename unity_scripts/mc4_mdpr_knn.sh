@@ -30,16 +30,27 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 #output=data/titles_10k_mdpr_pass.pt
 #python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
 
-echo "Perform KNN search."
+echo "Perform KNN search for Fr."
 
-input=("titles.txt" "titles.txt" "titles.txt" "titles.txt")
-input_emb=("titles_1k_mdpr_pass.pt" "titles_1k_mdpr_pass.pt" "titles_1k_mdpr_ques.pt" "titles_1k_mdpr_ques.pt")
-bank=("data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt")
-emb=("data/mc4_fr100k_mdpr_pass.pt", "data/mc4_fr100k_mdpr_ques.pt" "data/mc4_fr100k_mdpr_pass.pt" "data/mc4_fr100k_mdpr_ques.pt")
-output=("data/titles_1k_pass_fr100k_pass_mdpr.txt" "data/titles_1k_pass_fr100k_ques_mdpr.txt" "data/titles_1k_ques_fr100k_pass_mdpr.txt" "data/titles_1k_ques_fr100k_ques_mdpr.txt")
+input_arr=("titles.txt" "titles.txt" "titles.txt" "titles.txt")
+input_emb_arr=("titles_1k_mdpr_pass.pt" "titles_1k_mdpr_pass.pt" "titles_1k_mdpr_ques.pt" "titles_1k_mdpr_ques.pt")
+K=3
+
+bank_arr=("data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt")
+emb_arr=("data/mc4_fr100k_mdpr_pass.pt", "data/mc4_fr100k_mdpr_ques.pt" "data/mc4_fr100k_mdpr_pass.pt" "data/mc4_fr100k_mdpr_ques.pt")
+output_arr=("data/titles_1k_pass_fr100k_pass_mdpr.txt" "data/titles_1k_pass_fr100k_ques_mdpr.txt" "data/titles_1k_ques_fr100k_pass_mdpr.txt" "data/titles_1k_ques_fr100k_ques_mdpr.txt")
+
+#bank_arr=("data/mc4_de100k.txt" "data/mc4_de100k.txt" "data/mc4_de100k.txt" "data/mc4_de100k.txt")
+#emb_arr=("data/mc4_de100k_mdpr_pass.pt", "data/mc4_de100k_mdpr_ques.pt" "data/mc4_de100k_mdpr_pass.pt" "data/mc4_de100k_mdpr_ques.pt")
+#output_arr=("data/titles_1k_pass_de100k_pass_mdpr.txt" "data/titles_1k_pass_de100k_ques_mdpr.txt" "data/titles_1k_ques_de100k_pass_mdpr.txt" "data/titles_1k_ques_de100k_ques_mdpr.txt")
 
 for index in ${!input[*]}; do
-  echo "${input[$index]} ${input_emb[$index]} ${bank[$index]} ${emb[$index]} ${output[$index]}"
+  input=input_arr[$index]
+  input_emb=input_emb_arr[$index]
+  bank=bank_arr[$index]
+  emb=emb_arr[$index]
+  outout=output_arr[$index]
+  echo "${input} ${input_emb} ${bank} ${emb} ${output}"
 done
 
 #input=data/titles.txt
