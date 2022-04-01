@@ -46,10 +46,10 @@ output_arr=("data/titles_1k_pass_fr100k_pass_mdpr.txt" "data/titles_1k_pass_fr10
 
 for index in ${!input_arr[*]}; do
   input=${input_arr[$index]}
-  input_emb=input_emb_arr[$index]
-  bank=bank_arr[$index]
-  emb=emb_arr[$index]
-  outout=output_arr[$index]
+  input_emb=${input_emb_arr[$index]}
+  bank=${bank_arr[$index]}
+  emb=${emb_arr[$index]}
+  output=${output_arr[$index]}
   echo "${input} ${input_emb} ${bank} ${emb} ${output}"
 done
 
