@@ -55,7 +55,7 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
                     print_sno=False):
     assert save_path is not None, "provide a save_path to save the output."
     assert split_by in ["sentence", "paragraph", "mixed"], "provide a valid splitting technique."
-    assert language_code in ["fr"], "only Fr is supported."
+    assert language_code in ["fr", "de"], "only fr and de are supported."
 
     mc4random = load_dataset(
         "bertin-project/mc4-sampling", language_code,
@@ -65,7 +65,8 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
         factor=0.5,
     )
 
-    nlp_spacy = spacy.load("fr_core_news_md")
+    spacy_modules = {"fr": "fr_core_news_md", "de": "de_core_news_md"}
+    nlp_spacy = spacy.load(spacy_modules[language_code])
 
     # Clear out file content.
     with open(save_path, 'w') as f:

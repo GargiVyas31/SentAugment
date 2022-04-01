@@ -121,6 +121,7 @@ Download Spacy for sentence tokenization.
 pip install -U pip setuptools wheel
 pip install -U spacy
 python -m spacy download fr_core_news_md
+python -m spacy download de_core_news_md
 ```
 
 
