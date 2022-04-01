@@ -22,8 +22,8 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 
 echo "Embed bank sentences."
 input=data/mc4_de100k.txt
-output=data/mc4_de100k_mdpr_ques.pt
-python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="question"
+output=data/mc4_de100k_mdpr_pass.pt
+python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
 
 #echo "Embed query sentences."
 #input=data/10k_examples_retriever.txt
