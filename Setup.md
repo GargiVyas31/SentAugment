@@ -30,7 +30,7 @@ Download XML package inside SentAugment workspace.
 
 Access a GPU instance for creating sentence embeddings.
 
-`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42 --pty /usr/bin/bash`
+`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42,node92,node44 --pty /usr/bin/bash`
 
 ### For LASER:
 
@@ -121,6 +121,7 @@ Download Spacy for sentence tokenization.
 pip install -U pip setuptools wheel
 pip install -U spacy
 python -m spacy download fr_core_news_md
+python -m spacy download de_core_news_md
 ```
 
 

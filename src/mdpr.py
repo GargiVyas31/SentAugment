@@ -47,6 +47,7 @@ def main():
 
     assert args.model_type in ["question", "passage"], "--model_type only supports 'question' or 'passage'."
     model_name = "castorini/mdpr-question-nq" if args.model_type == "question" else "castorini/mdpr-passage-nq"
+    print(f"Using model {model_name}")
 
     current_path = str(pathlib.Path(__file__).parent.absolute())
     model_path = current_path + "/../models/" + model_name
