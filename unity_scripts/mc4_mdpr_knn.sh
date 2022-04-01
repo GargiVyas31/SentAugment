@@ -37,7 +37,7 @@ input_emb_arr=("data/titles_1k_mdpr_pass.pt" "data/titles_1k_mdpr_pass.pt" "data
 K=3
 
 bank_arr=("data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt")
-emb_arr=("data/mc4_fr100k_mdpr_pass.pt", "data/mc4_fr100k_mdpr_ques.pt" "data/mc4_fr100k_mdpr_pass.pt" "data/mc4_fr100k_mdpr_ques.pt")
+emb_arr=("data/mc4_fr100k_mdpr_pass.pt" "data/mc4_fr100k_mdpr_ques.pt" "data/mc4_fr100k_mdpr_pass.pt" "data/mc4_fr100k_mdpr_ques.pt")
 output_arr=("data/titles_1k_pass_fr100k_pass_mdpr.txt" "data/titles_1k_pass_fr100k_ques_mdpr.txt" "data/titles_1k_ques_fr100k_pass_mdpr.txt" "data/titles_1k_ques_fr100k_ques_mdpr.txt")
 
 #bank_arr=("data/mc4_de100k.txt" "data/mc4_de100k.txt" "data/mc4_de100k.txt" "data/mc4_de100k.txt")
