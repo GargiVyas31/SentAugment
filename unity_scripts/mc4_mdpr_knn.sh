@@ -21,7 +21,7 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 #python src/compress_text.py --input $file_name
 
 echo "Embed bank sentences."
-input=data/mc4_fr10.txt
+input=data/mc4_fr100k.txt
 output=data/mc4_fr100k_mdpr_pass.pt
 python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
 
