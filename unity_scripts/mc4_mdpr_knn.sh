@@ -50,7 +50,9 @@ for index in ${!input_arr[*]}; do
   bank=${bank_arr[$index]}
   emb=${emb_arr[$index]}
   output=${output_arr[$index]}
-  echo "${input} ${input_emb} ${bank} ${emb} ${output}"
+
+  echo "Running for ${input} ${input_emb} ${bank} ${emb} ${output}"
+  python src/flat_retrieve.py --input $input --input_emb $input_emb --bank $bank --emb $emb --K $K --pretty_print True --output $output
 done
 
 #input=data/titles.txt
