@@ -25,17 +25,29 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 #output=data/mc4_fr100k_mdpr_ques.pt
 #python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="question"
 
-echo "Embed query sentences."
-input=data/10k_examples_retriever.txt
-output=data/titles_10k_mdpr_pass.pt
-python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
+#echo "Embed query sentences."
+#input=data/10k_examples_retriever.txt
+#output=data/titles_10k_mdpr_pass.pt
+#python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
 
-#echo "Perform KNN search."
+echo "Perform KNN search."
+
+input=("titles.txt" "titles.txt" "titles.txt" "titles.txt")
+input_emb=("titles_1k_mdpr_pass.pt" "titles_1k_mdpr_pass.pt" "titles_1k_mdpr_ques.pt" "titles_1k_mdpr_ques.pt")
+bank=("data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt" "data/mc4_fr100k.txt")
+emb=("data/mc4_fr100k_mdpr_pass.pt", "data/mc4_fr100k_mdpr_ques.pt" "data/mc4_fr100k_mdpr_pass.pt" "data/mc4_fr100k_mdpr_ques.pt")
+output=("data/titles_1k_pass_fr100k_pass_mdpr.txt" "data/titles_1k_pass_fr100k_ques_mdpr.txt" "data/titles_1k_ques_fr100k_pass_mdpr.txt" "data/titles_1k_ques_fr100k_ques_mdpr.txt")
+
+for index in ${!input[*]}; do
+  echo "${input[$index]} ${input_emb[$index]} ${bank[$index]} ${emb[$index]} ${output[$index]}"
+done
+
 #input=data/titles.txt
-#bank=data/mc4_fr10000.txt
-#emb=data/mc4_fr10000.pt
-#output=data/titles_nn.txt
+#input_emb=titles_1k_mdpr_pass.pt
+#bank=data/mc4_fr100k.txt
+#emb=data/mc4_fr100k_mdpr_pass.pt
+#output=data/titles_1k_pass_fr100k_pass_mdpr.txt
 #K=3
-#python src/flat_retrieve.py --input $input --bank $bank --emb $emb --K $K --pretty_print True --output $output
+#python src/flat_retrieve.py --input $input --input_emb $input_emb --bank $bank --emb $emb --K $K --pretty_print True --output $output
 
 exit 0
