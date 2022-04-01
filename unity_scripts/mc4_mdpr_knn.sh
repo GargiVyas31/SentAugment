@@ -27,8 +27,8 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 
 echo "Embed query sentences."
 input=data/titles.txt
-output=data/titles_1k_mdpr_pass.pt
-python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="passage"
+output=data/titles_1k_mdpr_ques.pt
+python src/mdpr.py --input $input --output $output --batch_size=256 --cuda "True" --load_save "True" --model_type="question"
 
 #echo "Perform KNN search."
 #input=data/titles.txt
