@@ -131,5 +131,5 @@ if __name__ == '__main__':
     assert args.num_rows >= 1, "--num_rows need to be positive integer."
 
     sample_mc4_data(num_rows=args.num_rows, language_code=args.language, save_path=args.output,
-                    split_by=args.split_by, print_sno=False)
+                    split_by=args.split_by, print_sno=True)
     print("done")

@@ -17,7 +17,7 @@ export HF_DATASETS_CACHE="/home/ahattimare_umass_edu/scratch"
 
 echo "Download MC4 data for German."
 file_name=data/mc4_de100k.txt
-python src/generate_data.py --num_rows=10 --output $file_name --language=de --split_by=sentence
+python src/generate_data.py --num_rows=100 --output $file_name --language=de --split_by=sentence
 python src/compress_text.py --input $file_name
 
 #echo "Embed bank sentences."
