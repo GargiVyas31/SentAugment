@@ -10,7 +10,7 @@ Pytorch version for Unity cluster. Check right one [here](https://pytorch.org/).
 
 Faiss download for GPU:
 
-`conda install -c conda-forge faiss-gpu`
+`conda install -c pytorch faiss-gpu`
 
 Download sentencepiece.
 
@@ -68,7 +68,7 @@ Retrieve the Nearest Neighbors
 
 Download transformers library.
 
-`conda install -c conda-forge transformers=4.12.2`
+`conda install -c conda-forge transformers=4.16.2`
 
 Embed bank sentences.
 
