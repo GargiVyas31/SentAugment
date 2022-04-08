@@ -1,7 +1,7 @@
 import numpy as np
 
 words = []
-with open("../data/10k_examples_retriever.txt", "r") as f:
+with open("../data/nc_body_1k.txt", "r") as f:
     for line in f:
         words.append(len(line.split(' ')))
 

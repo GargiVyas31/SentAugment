@@ -49,11 +49,11 @@ Install dependencies. `path/to/model/directory` can be `/data`
 
 Encode bank sentences
 
-`input=data/keys.txt`
-
-`output=data/keys.pt`
-
-`python src/laser.py --input $input --output $output --input_lang "en" --cuda "True" `
+```
+input=data/keys.txt
+output=data/keys.pt
+python src/laser.py --input $input --output $output --input_lang "en" --cuda "True"
+```
 
 Encode input search sentences
 
