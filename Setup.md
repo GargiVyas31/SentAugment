@@ -10,11 +10,15 @@ Pytorch version for Unity cluster. Check right one [here](https://pytorch.org/).
 
 Faiss download for GPU:
 
-`conda install -c conda-forge faiss-gpu`
+`conda install -c pytorch faiss-gpu`
 
 Download sentencepiece.
 
 `conda install -c conda-forge sentencepiece`
+
+Download pandas.
+
+`conda install -c conda-forge pandas`
 
 Downloading CC data. First access CPU resource.
 
@@ -30,7 +34,10 @@ Download XML package inside SentAugment workspace.
 
 Access a GPU instance for creating sentence embeddings.
 
-`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42,node92,node44 --pty /usr/bin/bash`
+```
+srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42,node92,node44 --pty /usr/bin/bash
+srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --pty /usr/bin/bash
+```
 
 ### For LASER:
 
@@ -68,7 +75,7 @@ Retrieve the Nearest Neighbors
 
 Download transformers library.
 
-`conda install -c conda-forge transformers=4.12.2`
+`conda install -c conda-forge transformers=4.16.2`
 
 Embed bank sentences.
 
@@ -112,7 +119,7 @@ Download dependencies.
 
 ```
 pip install https://github.com/kpu/kenlm/archive/master.zip
-conda install -c conda-forge datasets
+conda install -c huggingface datasets
 ```
 
 Download Spacy for sentence tokenization.
