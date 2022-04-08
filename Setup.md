@@ -16,6 +16,10 @@ Download sentencepiece.
 
 `conda install -c conda-forge sentencepiece`
 
+Download pandas.
+
+`conda install -c conda-forge pandas`
+
 Downloading CC data. First access CPU resource.
 
 `srun --time 2:00:00 --mem 40G --pty /usr/bin/bash`
@@ -30,7 +34,10 @@ Download XML package inside SentAugment workspace.
 
 Access a GPU instance for creating sentence embeddings.
 
-`srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42,node92,node44 --pty /usr/bin/bash`
+```
+srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --exclude node41,node42,node92,node44 --pty /usr/bin/bash
+srun --time 1:00:00 --partition gpu --gres gpu:1 --mem 16G --pty /usr/bin/bash
+```
 
 ### For LASER:
 
@@ -112,7 +119,7 @@ Download dependencies.
 
 ```
 pip install https://github.com/kpu/kenlm/archive/master.zip
-conda install -c conda-forge datasets
+conda install -c huggingface datasets
 ```
 
 Download Spacy for sentence tokenization.
