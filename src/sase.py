@@ -76,7 +76,7 @@ def main():
     # encode sentences
     embs = []
     for bno, i in enumerate(range(0, len(sentences), args.batch_size)):
-        if i % 100 == 0:
+        if i % 10000 == 0:
             print(f"encoding sentences batch {bno + 1}...")
 
         batch = sentences[i:i+args.batch_size]

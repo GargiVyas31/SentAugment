@@ -13,15 +13,15 @@ cd /work/ahattimare_umass_edu/SentAugment
 
 source activate sent_augment
 
-echo "Embed Fr bank sentences using laser."
-input=data/mc4_fr100k_para.txt
-output=data/mc4_fr100k_para_laser.pt
-python src/laser.py --input $input --output $output --input_lang "fr" --cuda "True"
-
-echo "Embed De bank sentences using laser."
-input=data/mc4_de100k_para.txt
-output=data/mc4_de100k_para_laser.pt
-python src/laser.py --input $input --output $output --input_lang "de" --cuda "True"
+#echo "Embed Fr bank sentences using laser."
+#input=data/mc4_fr100k_para.txt
+#output=data/mc4_fr100k_para_laser.pt
+#python src/laser.py --input $input --output $output --input_lang "fr" --cuda "True"
+#
+#echo "Embed De bank sentences using laser."
+#input=data/mc4_de100k_para.txt
+#output=data/mc4_de100k_para_laser.pt
+#python src/laser.py --input $input --output $output --input_lang "de" --cuda "True"
 
 echo "Embed query sentences using laser."
 input=data/nc_body_1k.txt
