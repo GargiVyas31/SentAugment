@@ -12,6 +12,7 @@ import torch
 import argparse
 from collections import OrderedDict
 import sentencepiece as spm
+from tqdm import tqdm
 
 sys.path.insert(0, 'XLM/')
 
@@ -75,10 +76,7 @@ def main():
 
     # encode sentences
     embs = []
-    for bno, i in enumerate(range(0, len(sentences), args.batch_size)):
-        if i % 10000 == 0:
-            print(f"encoding sentences batch {bno + 1}...")
-
+    for i in tqdm(range(0, len(sentences), args.batch_size), desc="Encoding sentences"):
         batch = sentences[i:i+args.batch_size]
         lengths = torch.LongTensor([len(s) + 1 for s in batch])
         bs, slen = len(batch), lengths.max().item()
