@@ -29,8 +29,13 @@ def split_mixed(document: str) -> List[str]:
 
 def split_into_paragraphs(document: str) -> list:
     paragraphs = document.split("\n")
+
     # remove very small paragraphs.
-    paragraphs = [para for para in paragraphs if len(para) > 5]
+    def keep_para(para: str) -> bool:
+        words = para.split(' ')
+        return len(words) >= 250 and all(len(word) < 50 for word in words)
+
+    paragraphs = list(filter(keep_para, paragraphs))
     return paragraphs
 
 

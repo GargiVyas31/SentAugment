@@ -12,6 +12,7 @@ import pathlib
 
 import torch
 from laserembeddings import Laser
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="LASER encoding")
 
@@ -23,7 +24,7 @@ def main():
     # parser.add_argument("--laser_model", type=str, default="", help="laser model path")
     # parser.add_argument("--laser_bpe_codes", type=str, default="", help="laser bpe codes path")
     # parser.add_argument("--laser_bpe_vocab", type=str, default="", help="laser bpe vocab path")
-    # parser.add_argument("--batch_size", type=int, default=64, help="batch size")
+    parser.add_argument("--batch_size", type=int, default=64, help="batch size")
     # parser.add_argument("--max_words", type=int, default=100, help="max words")
     parser.add_argument("--cuda", type=str, default="True", help="use cuda")
     parser.add_argument("--output", type=str, default="", help="output file")
@@ -31,6 +32,7 @@ def main():
 
     current_path = str(pathlib.Path(__file__).parent.absolute())
     current_path = current_path + "/../"  # go one level up.
+    batch_size = args.batch_size
 
     laser_bpe_codes = current_path + "data/93langs.fcodes"
     laser_bpe_vocab = current_path + "data/93langs.fvocab"
@@ -43,7 +45,7 @@ def main():
     args.cuda = eval(args.cuda)
 
     # build model / reload weights
-    laser_model = Laser(laser_bpe_codes, laser_bpe_vocab, laser_model)
+    laser_model = Laser(laser_bpe_codes, laser_bpe_vocab, laser_model, embedding_options={"cpu": not args.cuda})
 
     # load sentences
     sentences = []
@@ -56,10 +58,12 @@ def main():
     # encode sentences
     embs = []
 
-    embeddings_input = laser_model.embed_sentences(sentences, lang=args.input_lang)
-    # print(type(embeddings_input))
-    embeddings_input = torch.tensor(embeddings_input).double().cpu()
-    embs.append(embeddings_input)
+    for i in tqdm(range(0, len(sentences), batch_size), desc="Encoding sentences"):
+        sentence_batch = sentences[i:i+batch_size]
+        embeddings_input = laser_model.embed_sentences(sentence_batch, lang=args.input_lang)
+        # print(type(embeddings_input))
+        embeddings_input = torch.tensor(embeddings_input).double().cpu()
+        embs.append(embeddings_input)
 
     # save embeddings
     torch.save(torch.cat(embs, dim=0).squeeze(0), args.output)
