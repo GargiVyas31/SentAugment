@@ -44,6 +44,7 @@ def main():
     # cuda
     assert args.cuda in ["True", "False"]
     args.cuda = eval(args.cuda)
+    load_saved = args.load_saved == "True"
 
     assert args.model_type in ["question", "passage"], "--model_type only supports 'question' or 'passage'."
     model_name = "castorini/mdpr-question-nq" if args.model_type == "question" else "castorini/mdpr-passage-nq"
@@ -51,15 +52,15 @@ def main():
 
     current_path = str(pathlib.Path(__file__).parent.absolute())
     model_path = current_path + "/../models/" + model_name
-    load_local_copy = True if args.load_saved == "True" and os.path.isdir(model_path) else False
+    load_local_copy = True if load_saved and os.path.isdir(model_path) else False
 
     tokenizer = AutoTokenizer.from_pretrained(model_path if load_local_copy else model_name)
-    if args.load_saved:
+    if load_saved:
         tokenizer.save_pretrained(model_path)
     print("MDPR tokenizer loaded.")
 
     model = AutoModel.from_pretrained(model_path if load_local_copy else model_name)
-    if args.load_saved:
+    if load_saved:
         model.save_pretrained(model_path)
     print("MDPR model loaded.")
 
@@ -67,8 +68,8 @@ def main():
     if args.cuda:
         model.cuda()
 
-    print(f"Max position embedding for model: {model.config.max_position_embeddings}")
     max_length = 512
+    print(f"Position embedding for model: {max_length}. Max possible: {model.config.max_position_embeddings}")
 
     # load sentences
     sentences = []
@@ -78,8 +79,8 @@ def main():
             if i % 10_000 == 0:
                 print(f"loading sentences line {i + 1}...")
 
-    # encode sentences
-    embs = []
+    # encode sentences and save in a tensor.
+    embeds = None
     with torch.no_grad():
         for i in tqdm(range(0, len(sentences), args.batch_size), desc="Embedding sentences"):
             batch = sentences[i:i + args.batch_size]
@@ -89,10 +90,18 @@ def main():
             if args.cuda:
                 batch_sent_tok = batch_sent_tok.to(device)
             batch_embeddings = model(**batch_sent_tok)
-            embs.append(batch_embeddings.pooler_output.cpu())
+            embeddings_cpu = batch_embeddings.pooler_output.cpu()
+
+            if embeds is None:
+                # preallocate the tensor with the correct expected size.
+                embeds = torch.zeros(len(sentences), embeddings_cpu.size()[1])
+                embeds[i:i + embeddings_cpu.size()[0]] = embeddings_cpu
+            else:
+                embeds[i:i + embeddings_cpu.size()[0]] = embeddings_cpu
 
     # save embeddings
-    torch.save(torch.cat(embs, dim=0).squeeze(0), args.output)
+    torch.save(embeds, args.output)
+    print("mdpr embedding done")
 
 
 if __name__ == "__main__":

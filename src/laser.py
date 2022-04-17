@@ -56,17 +56,19 @@ def main():
                 print(f"loading sentences line {i + 1}...")
 
     # encode sentences
-    embs = []
+    embeds = None
 
     for i in tqdm(range(0, len(sentences), batch_size), desc="Encoding sentences"):
         sentence_batch = sentences[i:i+batch_size]
         embeddings_input = laser_model.embed_sentences(sentence_batch, lang=args.input_lang)
-        # print(type(embeddings_input))
         embeddings_input = torch.tensor(embeddings_input).double().cpu()
-        embs.append(embeddings_input)
+        if embeds is None:
+            embeds = torch.zeros(len(sentences), embeddings_input.size()[1])
+        embeds[i:i + embeddings_input.size()[0]] = embeddings_input
 
     # save embeddings
-    torch.save(torch.cat(embs, dim=0).squeeze(0), args.output)
+    torch.save(embeds, args.output)
+    print("laser embedding done")
 
 
 if __name__ == "__main__":
