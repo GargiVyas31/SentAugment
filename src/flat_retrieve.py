@@ -7,8 +7,10 @@ Example: python src/flat_retrieve.py --input $input --bank $bank --emb data/keys
 """
 
 import argparse
+import csv
 import os
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -36,20 +38,30 @@ args = parser.parse_args()
 
 pretty_print = args.pretty_print == "True"
 pretty_print_file = ".".join(args.output.split(".")[:-1]) + "_prettry_print.txt" if pretty_print else ""
-assert pretty_print and Path(args.input).is_file(), "--pretty_print is True but --input file does not exist."
+if pretty_print:
+    assert Path(args.input).is_file(), "--pretty_print is True but --input file does not exist so can't print input."
 ppf = open(pretty_print_file, 'w') if pretty_print_file != "" else None
 
+assert args.output.split(".")[-1] == "csv", "--output file should be .csv"
+
 # load query embedding and bank embedding
+print('loading query and bank embeddings.')
+t0 = time.time()
 query_emb = torch.load(args.input_emb, map_location=torch.device(device))
+print(f"time to load query embeddings={(time.time() - t0):.3f}s")
+t0 = time.time()
 bank_emb = torch.load(args.emb, map_location=torch.device(device))
+print(f"time to load bank embeddings={(time.time() - t0):.3f}s")
 
 # normalize embeddings
 query_emb.div_(query_emb.norm(2, 1, keepdim=True).expand_as(query_emb))
 bank_emb.div_(bank_emb.norm(2, 1, keepdim=True).expand_as(bank_emb))
 
 # score and rank
+start = time.time()
 scores = bank_emb.mm(query_emb.t())  # B x Q
 _, indices = torch.topk(scores, args.K, dim=0)  # K x Q
+print(f"time to find knn={(time.time() - start):.3f}s")
 
 # fetch and print retrieved text
 txt_mmap, ref_mmap = IndexTextOpen(args.bank)
@@ -58,18 +70,22 @@ bank_index_used = []
 
 with open(args.input, "r") as input_file:
     with open(args.output, "w") as output_file:
-        for i, (query_idx, line) in enumerate(tqdm(zip(range(indices.size(1)), input_file), desc="Processing Input file.")):
+        csv_writer = csv.writer(output_file)
+        for i, (query_idx, line) in enumerate(tqdm(zip(range(indices.size(1)), input_file),
+                                                   total=indices.size(1), desc="Processing Input file.")):
             if ppf:
                 ppf.write(f"{i + 1} En: {line}")
             for k in range(args.K):
-                bank_index_used.append((indices[k][query_idx]).cpu())
-                sentence = IndexTextQuery(txt_mmap, ref_mmap, indices[k][query_idx])
+                bank_index = (indices[k][query_idx]).cpu().item()
+                bank_index_used.append(bank_index)
+                sentence = IndexTextQuery(txt_mmap, ref_mmap, bank_index)
                 if ppf:
                     ppf.write(f"{k + 1} Fr: {sentence}\n")
-                output_file.write(sentence + "\n")
+                csv_writer.writerow([bank_index, sentence])
             if ppf:
                 ppf.write(f"\n")
-ppf.close()
+if ppf:
+    ppf.close()
 
 # This shows how the KNN retrieved data is spread out in the bank.
 for perc in range(0, 101, 10):
