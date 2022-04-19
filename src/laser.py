@@ -9,6 +9,7 @@ Example: python src/sase.py --input $input --model $modelpath --spm_model $spmmo
 
 import argparse
 import pathlib
+import time
 
 import torch
 from laserembeddings import Laser
@@ -45,7 +46,9 @@ def main():
     args.cuda = eval(args.cuda)
 
     # build model / reload weights
+    t0 = time.time()
     laser_model = Laser(laser_bpe_codes, laser_bpe_vocab, laser_model, embedding_options={"cpu": not args.cuda})
+    print(f"time to load laser model: {(time.time() - t0):.3f}s")
 
     # load sentences
     sentences = []
