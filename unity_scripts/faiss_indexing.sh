@@ -70,10 +70,10 @@ index_path=data/mc4_fr1M_para_laser_faiss_index.idx
 #output_flat=data/titles_laser_fr100k_laser_knn_flat.csv
 
 # create and save index.
-#python src/index_creation/try_faiss.py --create_index --emb $emb --M 32 --index_path $index_path
+#python src/index_creation/faiss_index.py --create_index --emb $emb --M 32 --index_path $index_path
 
 # load and use index.
-python src/index_creation/try_faiss.py --search_index --input $input --input_emb $input_emb --bank $bank --index_path $index_path --K 3 --output $output --pretty_print $pretty_print
+python src/index_creation/faiss_index.py --search_index --input $input --input_emb $input_emb --bank $bank --index_path $index_path --K 3 --output $output --pretty_print $pretty_print
 
 # To compare time with flat retrieve method.
 #python src/flat_retrieve.py --input $input --input_emb $input_emb --bank $bank --emb $emb --K 3 --pretty_print True --output $output_flat
