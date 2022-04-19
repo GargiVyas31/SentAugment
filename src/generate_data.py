@@ -33,7 +33,7 @@ def split_into_paragraphs(document: str) -> list:
     # remove very small paragraphs.
     def keep_para(para: str) -> bool:
         words = para.split(' ')
-        return len(words) >= 250 and all(len(word) < 50 for word in words)
+        return len(words) >= 200 and all(len(word) < 50 for word in words)
 
     paragraphs = list(filter(keep_para, paragraphs))
     return paragraphs
@@ -91,7 +91,7 @@ def sample_mc4_data(num_rows=100, batch_size=100, language_code="fr", save_path=
         sentences += processed_sentences
         curr_size += len(processed_sentences)
 
-        if i % 1000 == 0:
+        if i % 10_000 == 0:
             print(f"Iteration {i}, processed {curr_size} sentences so far...")
 
         if len(sentences) >= batch_size:
