@@ -8,6 +8,8 @@ Example: python src/sase.py --input $input --model $modelpath --spm_model $spmmo
 """
 
 import sys
+import time
+
 import torch
 import argparse
 from collections import OrderedDict
@@ -101,4 +103,6 @@ def main():
 
 
 if __name__ == "__main__":
+    t0 = time.time()
     main()
+    print(f"sase.py took {(time.time() - t0):.3f} sec")
