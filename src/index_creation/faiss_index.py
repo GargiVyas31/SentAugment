@@ -71,9 +71,15 @@ def create_and_save_index(emb: str, M: int, index_path: str):
     print(f"Faiss index has been saved in {index_path}")
 
 
-def load_and_search_index(input, input_emb, bank, index_path, K, output, pretty_print):
+def load_and_search_index(input, input_emb, bank, index_path, K, output, pretty_print,
+                          multiple_banks_output=False, offset=0):
+    """
+    offset (int): for multiple banks, this tells the offset to be used for sentence ids.
+    """
+
     # Validate
     assert all(var is not None for var in [input, input_emb, bank, index_path, K, output, pretty_print])
+    print(f"passed offset is {offset}")
 
     pretty_print = pretty_print == "True"
     pretty_print_file = ".".join(output.split(".")[:-1]) + "_prettry_print.txt" if pretty_print else ""
@@ -104,6 +110,7 @@ def load_and_search_index(input, input_emb, bank, index_path, K, output, pretty_
 
     txt_mmap, ref_mmap = IndexTextOpen(bank)
     indices = I.T  # shape (k x nq) supported in flat_retrieve code.
+    scores = D.T  # shape (k x nq)
     with open(input, "r") as input_file:
         with open(output, "w") as output_file:
             csv_writer = csv.writer(output_file)
@@ -118,8 +125,11 @@ def load_and_search_index(input, input_emb, bank, index_path, K, output, pretty_
                     toprint = f"{k + 1}: {sentence}\n"
                     if ppf:
                         ppf.write(toprint)
-                    csv_writer.writerow([sent_idx, sentence])
-                    # output_file.write(sentence + "\n")
+                    if multiple_banks_output:
+                        csv_writer.writerow([query_idx, sent_idx + offset, scores[k][query_idx], sentence])
+                    else:
+                        csv_writer.writerow([sent_idx, sentence])
+
                 if ppf:
                     ppf.write("\n")
     if ppf:
@@ -139,14 +149,22 @@ if __name__ == '__main__':
     parser.add_argument("--K", type=int, default=100, help="number of nearest neighbors per sentence")
     parser.add_argument("--output", type=str, help="file path to save KNN search output")
     parser.add_argument("--pretty_print", type=str, choices=["True", "False"], default="False")
-
+    parser.add_argument("--multiple_banks_output", action="store_true", help="pass this flag if the output needs to be"
+                                                                             "later filtered for multiple banks.")
+    parser.add_argument("--offset", type=int, default=0, help="the sentence id offset used to save the retrieval result"
+                                                              " so that it can later be separated for multiple banks.")
     args = parser.parse_args()
 
     if args.create_index:
+        t0 = time.time()
         create_and_save_index(**{"emb": args.emb, "M": args.M, "index_path": args.index_path})
+        print(f"total time for create_and_save_index(): {(time.time() - t0):.3f}s.")
     elif args.search_index:
+        t0 = time.time()
         load_and_search_index(**{"input": args.input, "input_emb": args.input_emb, "bank": args.bank,
                                  "index_path": args.index_path, "K": args.K, "output": args.output,
-                                 "pretty_print": args.pretty_print})
+                                 "pretty_print": args.pretty_print, "multiple_banks_output": args.multiple_banks_output,
+                                 "offset": args.offset})
+        print(f"total time for load and search: {(time.time() - t0):.3f}s.")
     exit(0)
     # check_waters()
