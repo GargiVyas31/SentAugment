@@ -1,17 +1,13 @@
 #!/usr/bin/python3
 # Copyright (c) Facebook, Inc. and its affiliates.
 #
-import sys
-import os
 import argparse
+import os
+import sys
 
-import numpy as np
-import torch
 DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(DIR + '/../src/lib')
 from indexing import CompressText
-
-
 
 
 def main():
@@ -19,7 +15,6 @@ def main():
     parser.add_argument("--input", type=str, help="input text file")
     args = parser.parse_args()
     CompressText(args.input)
-
 
 
 if __name__ == "__main__":
