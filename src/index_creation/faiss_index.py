@@ -156,7 +156,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.create_index:
+        t0 = time.time()
         create_and_save_index(**{"emb": args.emb, "M": args.M, "index_path": args.index_path})
+        print(f"total time for create_and_save_index(): {(time.time() - t0):.3f}s.")
     elif args.search_index:
         t0 = time.time()
         load_and_search_index(**{"input": args.input, "input_emb": args.input_emb, "bank": args.bank,
