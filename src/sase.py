@@ -15,6 +15,7 @@ import argparse
 from collections import OrderedDict
 import sentencepiece as spm
 from tqdm import tqdm
+import pandas as pd
 
 sys.path.insert(0, 'XLM/')
 
@@ -68,13 +69,25 @@ def main():
 
     # load sentences
     sentences = []
-    with open(args.input) as f:
-        for i, line in enumerate(f):
+
+    if args.input.endswith(".txt"):
+        with open(args.input) as f:
+            for i, line in enumerate(f):
+                line = spm_model.EncodeAsPieces(line.rstrip())
+                line = line[:args.max_words - 1]
+                sentences.append(line)
+                if i % 10_000 == 0:
+                    print(f"loading sentences line {i + 1}...")
+    elif args.input.endswith(".csv"):
+        input_df = pd.read_csv(args.input, header=None)
+        for idx, line in enumerate(input_df[1]):
             line = spm_model.EncodeAsPieces(line.rstrip())
             line = line[:args.max_words - 1]
             sentences.append(line)
-            if i % 10_000 == 0:
-                print(f"loading sentences line {i + 1}...")
+            if idx % 10_000 == 0:
+                print(f"loading sentences line {idx + 1}...")
+    else:
+        raise Exception("Invalid input file format.")
 
     # encode sentences
     embs = []

@@ -5,6 +5,7 @@ import faiss
 import numpy as np
 import torch
 import argparse
+import pandas as pd
 
 # if you see import error while running the below line from terminal, you need to set the python path.
 # run the below command in terminal before running python command.
@@ -111,27 +112,29 @@ def load_and_search_index(input, input_emb, bank, index_path, K, output, pretty_
     txt_mmap, ref_mmap = IndexTextOpen(bank)
     indices = I.T  # shape (k x nq) supported in flat_retrieve code.
     scores = D.T  # shape (k x nq)
-    with open(input, "r") as input_file:
-        with open(output, "w") as output_file:
-            csv_writer = csv.writer(output_file)
-            for i, (query_idx, line) in enumerate(tqdm(zip(range(indices.shape[1]), input_file),
-                                                       total=indices.shape[1], desc="Processing Input.")):
-                toprint = f"{i + 1} En: {line}"
+    input_df = pd.read_csv(input, header=None)
+
+    with open(output, "w") as output_file:
+        csv_writer = csv.writer(output_file)
+        for query_idx, query_label, line in tqdm(zip(range(indices.shape[1]), input_df[0], input_df[1]),
+                                                 total=indices.shape[1],
+                                                 desc="Processing Input."):
+            toprint = f"{query_idx + 1} En: {line}"
+            if ppf:
+                ppf.write(toprint)
+            for k in range(K):
+                sent_idx = indices[k][query_idx]
+                sentence = IndexTextQuery(txt_mmap, ref_mmap, sent_idx)
+                toprint = f"{k + 1}: label={query_label}, {sentence}\n"
                 if ppf:
                     ppf.write(toprint)
-                for k in range(K):
-                    sent_idx = indices[k][query_idx]
-                    sentence = IndexTextQuery(txt_mmap, ref_mmap, sent_idx)
-                    toprint = f"{k + 1}: {sentence}\n"
-                    if ppf:
-                        ppf.write(toprint)
-                    if multiple_banks_output:
-                        csv_writer.writerow([query_idx, sent_idx + offset, scores[k][query_idx], sentence])
-                    else:
-                        csv_writer.writerow([sent_idx, sentence])
+                if multiple_banks_output:
+                    csv_writer.writerow([query_idx, sent_idx + offset, scores[k][query_idx], query_label, sentence])
+                else:
+                    csv_writer.writerow([sent_idx, query_label, sentence])
 
-                if ppf:
-                    ppf.write("\n")
+            if ppf:
+                ppf.write("\n")
     if ppf:
         ppf.close()
 

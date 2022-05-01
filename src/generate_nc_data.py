@@ -1,3 +1,5 @@
+import csv
+
 import pandas as pd
 from datasets import load_dataset
 from tqdm import tqdm
@@ -18,8 +20,8 @@ def download_nc():
         df_.index = df_.index.droplevel(0)
         return df_
 
-    # data_balanced = stratified_sample_df(data, "news_category", 1000)
-    data_balanced = data
+    data_balanced = stratified_sample_df(data, "news_category", 1000)
+    # data_balanced = data
 
     # Now again check the data distribution.
     data_balanced_perc = data_balanced["news_category"].value_counts().apply(lambda x: x*100/data_balanced.shape[0])
@@ -28,10 +30,14 @@ def download_nc():
     # shuffle the data.
     data_balanced.sample(frac=1).reset_index(drop=True)
 
-    with open("data/nc_body_100k.txt", "w") as f:
-        for article in tqdm(data_balanced["news_body"], desc="Creating NC body file"):
-            f.write(article)
-            f.write("\n")
+    output_file = "data/nc_body_10k.csv"
+
+    with open(output_file, "w") as output_file:
+        csv_writer = csv.writer(output_file)
+        for article, category in tqdm(zip(data_balanced["news_body"], data_balanced["news_category"]),
+                            desc="Creating NC body file",
+                            total=data_balanced.shape[0]):
+            csv_writer.writerow([category, article])
 
 
 if __name__ == '__main__':
