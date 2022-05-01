@@ -89,7 +89,7 @@ def main():
                 print(f"loading sentences line {i + 1}...")
 
     # encode sentences
-    embs = []
+    embs = None
     with torch.no_grad():
         for i in tqdm(range(0, len(sentences), args.batch_size), desc="Embedding sentences"):
             batch = sentences[i:i + args.batch_size]
@@ -99,10 +99,17 @@ def main():
             if args.cuda:
                 batch_sent_tok = batch_sent_tok.to(device)
             batch_embeddings = model(**batch_sent_tok)
-            embs.append(batch_embeddings.pooler_output.cpu())
+            embeddings_cpu = batch_embeddings.pooler_output.cpu()
+
+            if embs is None:
+                # preallocate the tensor with the correct expected size.
+                embs = torch.zeros(len(sentences), embeddings_cpu.size()[1])
+                embs[i:i + embeddings_cpu.size()[0]] = embeddings_cpu
+            else:
+                embs[i:i + embeddings_cpu.size()[0]] = embeddings_cpu
 
     # save embeddings
-    torch.save(torch.cat(embs, dim=0).squeeze(0), args.output)
+    torch.save(embs, args.output)
 
 
 if __name__ == "__main__":
