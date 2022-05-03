@@ -1,15 +1,15 @@
 """
-Script that takes text as input and output mDPR sentence embeddings.
+Script that takes text as input and output dpr-ctx sentence embeddings.
 """
 
 import argparse
 import io
 import os
 import pathlib
+import pandas as pd
 
 import torch
 from tqdm import tqdm
-# from transformers import AutoTokenizer, AutoModel
 
 from transformers import DPRContextEncoder, DPRContextEncoderTokenizer
 from transformers import DPRQuestionEncoder, DPRQuestionEncoderTokenizer
@@ -27,7 +27,7 @@ def get_torch_device():
 
 device = get_torch_device()
 
-parser = argparse.ArgumentParser(description="mDPR embeddings.")
+parser = argparse.ArgumentParser(description="dpr-ctx embeddings.")
 
 
 def main():
@@ -48,27 +48,20 @@ def main():
     args.cuda = eval(args.cuda)
 
     assert args.model_type in ["question", "passage"], "--model_type only supports 'question' or 'passage'."
-    model_name = "voidful/dpr-question_encoder-bert-base-multilingual" if args.model_type == "question" else "voidful/dpr-ctx_encoder-bert-base-multilingual"
+    model_name = "voidful/dpr-question_encoder-bert-base-multilingual" if args.model_type == "question" \
+        else "voidful/dpr-ctx_encoder-bert-base-multilingual"
     print(f"Using model {model_name}")
 
     current_path = str(pathlib.Path(__file__).parent.absolute())
     model_path = current_path + "/../models/" + model_name
     load_local_copy = True if args.load_saved == "True" and os.path.isdir(model_path) else False
-    # Change:
-    if args.model_type == "question":
-        tokenizer = DPRQuestionEncoderTokenizer.from_pretrained('voidful/dpr-question_encoder-bert-base-multilingual')
-    else:
-        tokenizer = DPRContextEncoderTokenizer.from_pretrained('voidful/dpr-ctx_encoder-bert-base-multilingual')
-    #tokenizer = AutoTokenizer.from_pretrained(model_path if load_local_copy else model_name)
+
+    tokenizer = DPRQuestionEncoderTokenizer.from_pretrained(model_path if load_local_copy else model_name)
     if args.load_saved:
         tokenizer.save_pretrained(model_path)
     print("MDPR tokenizer loaded.")
 
-    if args.model_type == "question":
-        model = DPRQuestionEncoder.from_pretrained('voidful/dpr-question_encoder-bert-base-multilingual')
-    else:
-        model = DPRContextEncoder.from_pretrained('voidful/dpr-ctx_encoder-bert-base-multilingual')
-    #model = AutoModel.from_pretrained(model_path if load_local_copy else model_name)
+    model = DPRQuestionEncoder.from_pretrained(model_path if load_local_copy else model_name)
     if args.load_saved:
         model.save_pretrained(model_path)
     print("MDPR-CTX model loaded.")
@@ -82,11 +75,19 @@ def main():
 
     # load sentences
     sentences = []
-    with io.open(args.input, encoding="utf-8", errors="ignore") as f:
-        for i, line in enumerate(f):
+
+    if args.input.endswith(".txt"):
+        with io.open(args.input, encoding="utf-8", errors="ignore") as f:
+            for i, line in enumerate(f):
+                sentences.append(line.rstrip())
+                if i % 10000 == 0:
+                    print(f"loading sentences line {i + 1}...")
+    elif args.input.endswith(".csv"):
+        input_df = pd.read_csv(args.input, header=None)
+        for idx, line in enumerate(input_df[1]):
             sentences.append(line.rstrip())
-            if i % 10000 == 0:
-                print(f"loading sentences line {i + 1}...")
+            if idx % 10000 == 0:
+                print(f"loading sentences line {idx + 1}...")
 
     # encode sentences
     embs = None
