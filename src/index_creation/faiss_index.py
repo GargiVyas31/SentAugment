@@ -119,13 +119,13 @@ def load_and_search_index(input, input_emb, bank, index_path, K, output, pretty_
         for query_idx, query_label, line in tqdm(zip(range(indices.shape[1]), input_df[0], input_df[1]),
                                                  total=indices.shape[1],
                                                  desc="Processing Input."):
-            toprint = f"{query_idx + 1} En: {line}"
+            toprint = f"qid: {query_idx}, En: {line}\n"
             if ppf:
                 ppf.write(toprint)
             for k in range(K):
                 sent_idx = indices[k][query_idx]
                 sentence = IndexTextQuery(txt_mmap, ref_mmap, sent_idx)
-                toprint = f"{k + 1}: label={query_label}, {sentence}\n"
+                toprint = f"k={k + 1}: label={query_label}, score={scores[k][query_idx]}, sent={sentence}\n\n\n"
                 if ppf:
                     ppf.write(toprint)
                 if multiple_banks_output:
